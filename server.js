@@ -2,20 +2,21 @@
 
 require('dotenv').config();
 
-const PORT          = process.env.PORT || 8080;
-const ENV           = process.env.ENV || "development";
-const express       = require("express");
-const bodyParser    = require("body-parser");
-const bcrypt        = require('bcrypt');
-const sass          = require("node-sass-middleware");
+const PORT = process.env.PORT || 8080;
+const ENV = process.env.ENV || "development";
+const express = require("express");
+const bodyParser = require("body-parser");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const sass = require("node-sass-middleware");
 const cookieSession = require('cookie-session');
-const app           = express();
+const app = express();
 const helperFunctions = require('./lib/util/helper_functions');
 
-const knexConfig  = require("./knexfile");
-const knex        = require("knex")(knexConfig[ENV]);
-const morgan      = require('morgan');
-const knexLogger  = require('knex-logger');
+const knexConfig = require("./knexfile");
+const knex = require("knex")(knexConfig[ENV]);
+const morgan = require('morgan');
+const knexLogger = require('knex-logger');
 
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
@@ -59,15 +60,15 @@ app.get("/", (req, res) => {
 
 app.post("/sign-in", (req, res) => {
   helperFunctions.authenticate(knex, req.body.email, req.body.password)
-  .then(result => {
-    // check for true or false
-    // console.log(result)
-    if (result) {
-      res.redirect("/")
-    } else {
-      res.redirect("/sign-in")
-    };
-  });
+    .then(result => {
+      // check for true or false
+      // console.log(result)
+      if (result) {
+        res.redirect("/")
+      } else {
+        res.redirect("/sign-in")
+      };
+    });
 });
 
 // app.get("/sign-in", (req, res) => {
@@ -75,21 +76,25 @@ app.post("/sign-in", (req, res) => {
 // });
 
 
-//register
+//Register page
 app.post("/register", (req, res) => {
+  const {
+    email,
+    password
+  } = req.body
   //check if the cookie exists
   // if (req.session.user_id) {
   //   res.redirect('/')
 
   //check if email and password exists
   //} else 
-  if (req.body.email.length === 0 || req.body.password.length === 0) {
+  if (email.length === 0 || password.length === 0) {
     res.status(400).send('Email or password is empty')
-
   } else {
+    const hashedPassword = bcrypt.hashSync(password, saltRounds);
     knex('user_credentials').insert({
-      email: req.body.email,
-      password: req.body.password
+      email: email,
+      password: hashedPassword
     }).then(res => {
       console.log('success')
     })
