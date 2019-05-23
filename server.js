@@ -10,6 +10,7 @@ const bcrypt        = require('bcrypt');
 const sass          = require("node-sass-middleware");
 const cookieSession = require('cookie-session');
 const app           = express();
+const helperFunctions = require('./lib/util/helper_functions');
 
 const knexConfig  = require("./knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
@@ -44,6 +45,31 @@ app.use("/api/users", usersRoutes(knex));
 app.get("/", (req, res) => {
   res.render("index");
 });
+
+//standalone authentication-tester
+// const help = helperFunctions.authenticate(knex, "adamcraveiro@gmail.com", "12334343")
+// .then(result => {
+//   display(result)
+//   return result
+// });
+
+app.post("/login", (req, res) => {
+  helperFunctions.authenticate(knex, req.body.email, req.body.password)
+  .then(result => {
+    display(result)
+    if (result) {
+      res.?
+    } else {
+      res.redirect("/")
+    };
+  });
+});
+
+
+const display = (data) => {
+  console.log(data)
+}
+
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
