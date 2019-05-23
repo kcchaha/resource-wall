@@ -2,17 +2,20 @@
 
 require('dotenv').config();
 
-const PORT = process.env.PORT || 8080;
-const ENV = process.env.ENV || "development";
-const express = require("express");
-const bodyParser = require("body-parser");
-const sass = require("node-sass-middleware");
-const app = express();
+const PORT          = process.env.PORT || 8080;
+const ENV           = process.env.ENV || "development";
+const express       = require("express");
+const bodyParser    = require("body-parser");
+const bcrypt        = require('bcrypt');
+const sass          = require("node-sass-middleware");
+const cookieSession = require('cookie-session');
+const app           = express();
+const helperFunctions = require('./lib/util/helper_functions');
 
-const knexConfig = require("./knexfile");
-const knex = require("knex")(knexConfig[ENV]);
-const morgan = require('morgan');
-const knexLogger = require('knex-logger');
+const knexConfig  = require("./knexfile");
+const knex        = require("knex")(knexConfig[ENV]);
+const morgan      = require('morgan');
+const knexLogger  = require('knex-logger');
 
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
@@ -46,6 +49,54 @@ app.use("/api/users", usersRoutes(knex));
 app.get("/", (req, res) => {
   res.render("index.html");
 });
+
+//standalone authentication-tester
+// const help = helperFunctions.authenticate(knex, "adamcraveiro@gmail.com", "12334343")
+// .then(result => {
+//   display(result)
+//   return result
+// });
+
+app.post("/sign-in", (req, res) => {
+  helperFunctions.authenticate(knex, req.body.email, req.body.password)
+  .then(result => {
+    // check for true or false
+    // console.log(result)
+    if (result) {
+      res.redirect("/")
+    } else {
+      res.redirect("/sign-in")
+    };
+  });
+});
+
+app.get("/sign-in", (req, res) => {
+  res.render("sign-in")
+});
+
+
+$("#sign-in-form").on("submit", function(event) {
+  event.preventDefault();
+  helperFunctions.authenticate(knex, req.body.email, req.body.password)
+  .then(result => {
+    if (result) {
+      $.ajax({
+        method: "POST",
+        url: $(this).attr("action"),
+        data: $(this).serialize()
+      }).done(function() {
+        $("#main-container").empty();
+        loadTweets();
+      });
+      res.redirect("/")
+    } else {
+      res.redirect("/sign-in")
+    };
+  });
+    
+  }
+});
+
 
 //register
 app.post("/register", (req, res) => {
