@@ -20,6 +20,7 @@ const knexLogger  = require('knex-logger');
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
 
+
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
@@ -30,7 +31,9 @@ app.use(knexLogger(knex));
 
 
 app.use(express.static(__dirname + '/public/HTML'));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use("/styles", sass({
   src: __dirname + "/styles",
   dest: __dirname + "/public/styles",
@@ -95,6 +98,27 @@ $("#sign-in-form").on("submit", function(event) {
 });
 
 
+//register
+app.post("/register", (req, res) => {
+  //check if the cookie exists
+  // if (req.session.user_id) {
+  //   res.redirect('/')
+
+  //check if email and password exists
+  //} else 
+  if (req.body.email.length === 0 || req.body.password.length === 0) {
+    res.status(400).send('Email or password is empty')
+
+  } else {
+    knex('user_credentials').insert({
+      email: req.body.email,
+      password: req.body.password
+    }).then(res => {
+      console.log('success')
+    })
+  }
+
+});
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
