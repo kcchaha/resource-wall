@@ -1,8 +1,7 @@
 
 exports.seed = function(knex, Promise) {
-  console.log('asdf')
   // Deletes ALL existing entries
-  return knex('user_credentials').del()
+  return knex('user_credentials')
     .then(function () {
       return Promise.all([
         // Inserts seed entries
