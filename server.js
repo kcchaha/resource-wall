@@ -75,27 +75,27 @@ app.get("/sign-in", (req, res) => {
 });
 
 
-$("#sign-in-form").on("submit", function(event) {
-  event.preventDefault();
-  helperFunctions.authenticate(knex, req.body.email, req.body.password)
-  .then(result => {
-    if (result) {
-      $.ajax({
-        method: "POST",
-        url: $(this).attr("action"),
-        data: $(this).serialize()
-      }).done(function() {
-        $("#main-container").empty();
-        loadTweets();
-      });
-      res.redirect("/")
-    } else {
-      res.redirect("/sign-in")
-    };
-  });
+// $("#sign-in-form").on("submit", function(event) {
+//   event.preventDefault();
+//   helperFunctions.authenticate(knex, req.body.email, req.body.password)
+//   .then(result => {
+//     if (result) {
+//       $.ajax({
+//         method: "POST",
+//         url: $(this).attr("action"),
+//         data: $(this).serialize()
+//       }).done(function() {
+//         $("#main-container").empty();
+//         loadTweets();
+//       });
+//       res.redirect("/")
+//     } else {
+//       res.redirect("/sign-in")
+//     };
+//   });
     
-  }
-});
+//   }
+// });
 
 
 //register
