@@ -6,7 +6,7 @@ exports.up = function(knex, Promise) {
         table.string('title');
         table.string('description');
         table.string('category');
-        table.integer('user_id').references('id').inTable('user_credentials');
+        table.foreignkey('user_id').references('id').inTable('user_credentials');
       });
 };
 
