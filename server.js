@@ -56,19 +56,15 @@ app.get("/", (req, res) => {
 app.post("/login", (req, res) => {
   helperFunctions.authenticate(knex, req.body.email, req.body.password)
   .then(result => {
-    display(result)
+    // check for true or false
+    // console.log(result)
     if (result) {
-      res.?
-    } else {
       res.redirect("/")
+    } else {
+      res.redirect("/login")
     };
   });
 });
-
-
-const display = (data) => {
-  console.log(data)
-}
 
 
 app.listen(PORT, () => {
