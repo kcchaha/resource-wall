@@ -25,6 +25,5 @@ function register() {
 }
 
 $(document).ready(function () {
-  console.log('hey')
   register()
 })

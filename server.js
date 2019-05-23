@@ -114,10 +114,10 @@ app.post("/register", (req, res) => {
   if (email.length === 0 || password.length === 0) {
     res.status(400).send('Email or password is empty')
   } else {
-    const hash = bcrypt.hashSync(password, saltRounds);
+    const hashedPassword = bcrypt.hashSync(password, saltRounds);
     knex('user_credentials').insert({
       email: email,
-      password: hash
+      password: hashedPassword
     }).then(res => {
       console.log('success')
     })
