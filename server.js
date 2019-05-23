@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
 //   return result
 // });
 
-app.post("/login", (req, res) => {
+app.post("/sign-in", (req, res) => {
   helperFunctions.authenticate(knex, req.body.email, req.body.password)
   .then(result => {
     // check for true or false
@@ -62,10 +62,38 @@ app.post("/login", (req, res) => {
     if (result) {
       res.redirect("/")
     } else {
-      res.redirect("/login")
+      res.redirect("/sign-in")
     };
   });
 });
+
+app.get("/sign-in", (req, res) => {
+  res.render("sign-in")
+});
+
+
+$("#sign-in-form").on("submit", function(event) {
+  event.preventDefault();
+  helperFunctions.authenticate(knex, req.body.email, req.body.password)
+  .then(result => {
+    if (result) {
+      $.ajax({
+        method: "POST",
+        url: $(this).attr("action"),
+        data: $(this).serialize()
+      }).done(function() {
+        $("#main-container").empty();
+        loadTweets();
+      });
+      res.redirect("/")
+    } else {
+      res.redirect("/sign-in")
+    };
+  });
+    
+  }
+});
+
 
 
 app.listen(PORT, () => {
