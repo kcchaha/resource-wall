@@ -27,7 +27,23 @@ function login() {
   })
 }
 
+function getLinks() {
+  $('#search button').on('click', function (event) {
+    event.preventDefault();
+    const inputText = $('#search input').val()
+    if (inputText) {
+      $.ajax({
+        method: "GET",
+        url: `/links?key=${inputText}`
+      }).done(function (links) {
+        console.log(links)
+      })
+    }
+  })
+}
+
 $(document).ready(function () {
+  getLinks();
   register();
   login();
 })
