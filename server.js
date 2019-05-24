@@ -71,9 +71,22 @@ app.post("/sign-in", (req, res) => {
     });
 });
 
-// app.get("/sign-in", (req, res) => {
-//   res.render("sign-in")
-// });
+// updates a user's longURL
+app.put("/update-profile/:id", (req, res) => {
+  // add cookie session here?
+  let inputEmail = req.body.email;
+  let newPassword = req.body.newPassword;
+  helperFunctions.updatePassword(knex, inputEmail, newPassword)
+  res.send("Got a put request at /user")
+});
+
+app.get("/update-profile", (req, res) => {
+  res.render("/update-profile")
+});
+
+app.get("/sign-in", (req, res) => {
+  res.render("/sign-in")
+});
 
 
 //Register page
