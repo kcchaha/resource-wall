@@ -1,6 +1,6 @@
 "use strict";
 
-require('dotenv').config();
+require("dotenv").config();
 
 //////////////////// REQUIREMENTS ////////////////////
 const PORT            = process.env.PORT || 8080;
@@ -21,9 +21,7 @@ const morgan          = require('morgan');
 const knexLogger      = require('knex-logger');
 
 // Separated Routes for each Resource
-const usersRoutes     = require("./routes/users");
-
-
+const usersRoutes = require("./routes/users");
 
 //////////////////// MIDDLEWARE ////////////////////
 app.use(
@@ -36,111 +34,109 @@ app.use(
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
 // Log knex SQL queries to STDOUT as well
 app.use(knexLogger(knex));
 
 // To handle PUT form submissions
-app.use(methodOverride('_method'))
+app.use(methodOverride("_method"));
 
-
-app.use(express.static(__dirname + '/public/HTML'));
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use("/styles", sass({
-  src: __dirname + "/styles",
-  dest: __dirname + "/public/styles",
-  debug: true,
-  outputStyle: 'expanded'
-}));
+app.use(express.static(__dirname + "/public/HTML"));
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
+app.use(
+  "/styles",
+  sass({
+    src: __dirname + "/styles",
+    dest: __dirname + "/public/styles",
+    debug: true,
+    outputStyle: "expanded"
+  })
+);
 app.use(express.static("public"));
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
-
 
 //////////////////// POST METHODS ////////////////////
 
 // sign-in form
 app.post("/sign-in", (req, res) => {
   if (helperFunctions.loggedOn(req)) {
-    res.redirect("/")
+    res.redirect("/");
   }
   if (!req.body.email) {
-    res.send("Empty email field. Please try again.")
+    res.send("Empty email field. Please try again.");
   }
   if (req.body.password.length === 0) {
-    res.send("Empty password field. Please try again.")
+    res.send("Empty password field. Please try again.");
   }
-  helperFunctions.authenticate(knex, req.body.email, req.body.password)
+  helperFunctions
+    .authenticate(knex, req.body.email, req.body.password)
     .then(result => {
       if (result) {
-        helperFunctions.findId(knex, req.body.email)
-        .then(user => {
+        helperFunctions.findId(knex, req.body.email).then(user => {
           req.session.user_id = user;
-          res.redirect("/")
-        })
+          res.redirect("/");
+        });
       } else {
-        res.send("Wrong password or email. Please try again.")
-      };
+        res.send("Wrong password or email. Please try again.");
+      }
     });
 });
 
 //Register page
 app.post("/register", (req, res) => {
   if (helperFunctions.loggedOn(req)) {
-    res.redirect("/")
+    res.redirect("/");
   }
-  const {
-    email,
-    password
-  } = req.body
+  const { email, password } = req.body;
 
   //check if email and password exists
   if (email.length === 0 || password.length === 0) {
-    res.status(400).send('Email or password is empty')
+    res.status(400).send("Email or password is empty");
   } else {
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
-    knex('user_credentials').insert({
+    knex("user_credentials")
+      .insert({
         email: email,
         password: hashedPassword
-      }).returning('id')
-      .then((ids) => {
-        req.session.user_id = ids[0]
-        res.status(200).send('Ok')
+      })
+      .returning("id")
+      .then(ids => {
+        req.session.user_id = ids[0];
+        res.status(200).send("Ok");
       })
       .catch(error => {
-        res.status(400).send(error)
-      })
+        res.status(400).send(error);
+      });
   }
 });
 
 //create a new link
 app.post("/links", (req, res) => {
   if (req.session.user_id) {
-    const {
-      title,
-      description,
-      url,
-      category
-    } = req.body
-    console.log('req!', req.body)
+    const { title, description, url, category } = req.body;
+    console.log("req!", req.body);
 
-    knex('links').insert({
+    knex("links")
+      .insert({
         title: title,
         description: description,
         url: url,
         category: category,
         created_at: new Date(),
-        user_id: req.session.user_id,
+        user_id: req.session.user_id
       })
-      .then((links) => {
-        console.log('table', links)
-        res.status(200).send('Ok')
-      })
+      .then(links => {
+        console.log("table", links);
+        res.status(200).send("Ok");
+      });
   }
 });
 
@@ -150,26 +146,25 @@ app.post("/logout", (req, res) => {
   res.redirect("/");
 });
 
-
 //////////////////// PUT METHODS ////////////////////
 
 // update user-password
 app.put("/update-profile", (req, res) => {
   if (!helperFunctions.loggedOn(req)) {
-    res.redirect("/")
+    res.redirect("/");
   }
   let inputEmail = req.body.email;
   let oldPassword = req.body.oldPassword;
   let newPassword = req.body.newPassword;
-  helperFunctions.updatePassword(knex, inputEmail, oldPassword, newPassword)
-    .then((result) => {
-        if (result) {
-          res.send("Password successfully changed.")
-        }
-        res.send("Wrong password. Please try again.")
-    })
+  helperFunctions
+    .updatePassword(knex, inputEmail, oldPassword, newPassword)
+    .then(result => {
+      if (result) {
+        res.send("Password successfully changed.");
+      }
+      res.send("Wrong password. Please try again.");
+    });
 });
-
 
 //////////////////// GET METHODS ////////////////////
 
@@ -199,16 +194,16 @@ app.get("/", (req, res) => {
 
 app.get("/update-profile", (req, res) => {
   if (!helperFunctions.loggedOn(req)) {
-    res.redirect("/")
+    res.redirect("/");
   }
-  res.render("/update-profile")
+  res.render("/update-profile");
 });
 
 app.get("/sign-in", (req, res) => {
   if (helperFunctions.loggedOn(req)) {
-    res.redirect("/")
+    res.redirect("/");
   }
-  res.render("/sign-in")
+  res.render("/sign-in");
 });
 
 //get links
@@ -258,36 +253,30 @@ app.get("/links", (req, res) => {
   }
  });
 
-
 // //get a link
 // app.get("/links/:id", (req, res) => {
 //   console.log(req.body)
 // });
 
-
 //create a new link
 app.post("/links", (req, res) => {
   if (req.session.user_id) {
-    const {
-      title,
-      description,
-      url,
-      category
-    } = req.body
-    console.log('req!', req.body)
+    const { title, description, url, category } = req.body;
+    console.log("req!", req.body);
 
-    knex('links').insert({
+    knex("links")
+      .insert({
         title: title,
         description: description,
         url: url,
         category: category,
         created_at: new Date(),
-        user_id: req.session.user_id,
+        user_id: req.session.user_id
       })
-      .then((links) => {
-        console.log('table', links)
-        res.status(200).send('Ok')
-      })
+      .then(links => {
+        console.log("table", links);
+        res.status(200).send("Ok");
+      });
   }
 });
 
