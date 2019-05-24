@@ -21,7 +21,7 @@ body {
   #main-nav-bar {
     @extend %flex;
     width: 100%;
-    background-color:rgb(68, 68, 68);;
+    background-color:#313131;
     height: 5em;
 
     #search {
@@ -92,7 +92,7 @@ body {
         @extend %flex;
         flex-direction: column;
         border: solid 1px #999999;
-        height: 250px;
+        height: 18em;
         width: 18em;
         margin: 1em 1em;
 

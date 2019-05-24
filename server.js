@@ -2,23 +2,31 @@
 
 require('dotenv').config();
 
-const PORT          = process.env.PORT || 8080;
-const ENV           = process.env.ENV || "development";
-const express       = require("express");
-const bodyParser    = require("body-parser");
-const bcrypt        = require('bcrypt');
-const sass          = require("node-sass-middleware");
+const PORT = process.env.PORT || 8080;
+const ENV = process.env.ENV || "development";
+const express = require("express");
+const bodyParser = require("body-parser");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const sass = require("node-sass-middleware");
 const cookieSession = require('cookie-session');
-const app           = express();
+const app = express();
 const helperFunctions = require('./lib/util/helper_functions');
 
-const knexConfig  = require("./knexfile");
-const knex        = require("knex")(knexConfig[ENV]);
-const morgan      = require('morgan');
-const knexLogger  = require('knex-logger');
+const knexConfig = require("./knexfile");
+const knex = require("knex")(knexConfig[ENV]);
+const morgan = require('morgan');
+const knexLogger = require('knex-logger');
 
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
+
+app.use(
+  cookieSession({
+    name: "session",
+    keys: ["key1", "key2"]
+  })
+);
 
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
@@ -57,18 +65,18 @@ app.get("/", (req, res) => {
 //   return result
 // });
 
-app.post("/sign-in", (req, res) => {
-  helperFunctions.authenticate(knex, req.body.email, req.body.password)
-  .then(result => {
-    // check for true or false
-    // console.log(result)
-    if (result) {
-      res.redirect("/")
-    } else {
-      res.redirect("/sign-in")
-    };
-  });
-});
+// app.post("/sign-in", (req, res) => {
+//   helperFunctions.authenticate(knex, req.body.email, req.body.password)
+//   .then(result => {
+//     // check for true or false
+//     // console.log(result)
+//     if (result) {
+//       res.redirect("/")
+//     } else {
+//       res.redirect("/sign-in")
+//     };
+//   });
+// });
 
 app.get("/sign-in", (req, res) => {
   res.render("sign-in")
@@ -98,24 +106,61 @@ app.get("/sign-in", (req, res) => {
 // });
 
 
-//register
+// //register
+//     .then(result => {
+//       // check for true or false
+//       // console.log(result)
+//       if (result) {
+//         res.redirect("/")
+//       } else {
+//         res.redirect("/sign-in")
+//       };
+//     });
+// });
+
+// updates a user's longURL
+app.put("/update-profile/:id", (req, res) => {
+  // add cookie session here?
+  let inputEmail = req.body.email;
+  let newPassword = req.body.newPassword;
+  helperFunctions.updatePassword(knex, inputEmail, newPassword)
+  res.send("Got a put request at /user")
+});
+
+app.get("/update-profile", (req, res) => {
+  res.render("/update-profile")
+});
+
+app.get("/sign-in", (req, res) => {
+  res.render("/sign-in")
+});
+
+
+//Register page
 app.post("/register", (req, res) => {
-  //check if the cookie exists
-  // if (req.session.user_id) {
-  //   res.redirect('/')
+  const {
+    email,
+    password
+  } = req.body
 
   //check if email and password exists
-  //} else 
-  if (req.body.email.length === 0 || req.body.password.length === 0) {
+  if (email.length === 0 || password.length === 0) {
     res.status(400).send('Email or password is empty')
-
   } else {
+    const hashedPassword = bcrypt.hashSync(password, saltRounds);
+
     knex('user_credentials').insert({
-      email: req.body.email,
-      password: req.body.password
-    }).then(res => {
-      console.log('success')
-    })
+        email: email,
+        password: hashedPassword
+      }).returning('id')
+      .then((ids) => {
+        // console.log('id', ids)
+        req.session.user_id = ids[0]
+        res.status(200).send('Ok')
+      })
+      .catch(error => {
+        res.status(400).send(error)
+      })
   }
 
 });
