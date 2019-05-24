@@ -21,6 +21,13 @@ const knexLogger = require('knex-logger');
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
 
+app.use(
+  cookieSession({
+    name: "session",
+    keys: ["key1", "key2"]
+  })
+);
+
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -92,12 +99,16 @@ app.post("/register", (req, res) => {
     res.status(400).send('Email or password is empty')
   } else {
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
+
     knex('user_credentials').insert({
-      email: email,
-      password: hashedPassword
-    }).then(res => {
-      console.log('success')
-    })
+        email: email,
+        password: hashedPassword
+      }).returning('id')
+      .then(ids, error => {
+        if (error)
+          req.session.user_id = ids[0]
+        res.status(200).send('Ok')
+      })
   }
 
 });
