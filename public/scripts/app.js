@@ -67,10 +67,26 @@ function addLinksToPage(links) {
   })
 }
 
+//create a new link
+function createLink() {
+  $('#newLink').on('submit', function () {
+    event.preventDefault();
+    $.ajax({
+      method: "POST",
+      url: '/links',
+      data: $(this).serialize()
+    }).done(function (data) {
+      console.log(data)
+      window.location.replace('/')
+    })
+  })
+}
+
 $(document).ready(function () {
   loadLinks();
   getLinks();
   register();
   login();
+  createLink();
 
 })

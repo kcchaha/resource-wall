@@ -15,24 +15,25 @@
 <body>
   <h2>Add more details for your link</h2>
 
-  <form>
+  <form id='newLink'>
     <div class="form-group">
       <label for="formGroupExampleInput">Title</label>
-      <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Give your link a title...">
+      <input name='title' type="text" class="form-control" id="formGroupExampleInput"
+        placeholder="Give your link a title...">
     </div>
     <div class="form-group">
       <label for="formGroupExampleInput2">Description</label>
-      <input type="text" class="form-control" id="formGroupExampleInput2"
+      <input name='description' type="text" class="form-control" id="formGroupExampleInput2"
         placeholder="Add description about your link...">
     </div>
     <div class="form-group">
       <label for="formGroupExampleInput">URL</label>
-      <input type="text" class="form-control" id="formGroupExampleInput"
+      <input name='url' type="text" class="form-control" id="formGroupExampleInput"
         placeholder="Provide the url of the link here...">
     </div>
     <div class="list-categories">
       <span>Select a category for you link:</span>
-      <select name="categories">
+      <select name="category">
         <option value="html">HTML</option>
         <option value="css">CSS</option>
         <option value="javascript">Javascript</option>

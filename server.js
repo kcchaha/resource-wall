@@ -184,10 +184,14 @@ app.get("/links", (req, res) => {
 
 // //get a link
 // app.get("/links/:id", (req, res) => {
-
-
+//   console.log(req.body)
 // });
 
+
+//create a new link
+app.post("/links", (req, res) => {
+  console.log('req!', req.body)
+});
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
