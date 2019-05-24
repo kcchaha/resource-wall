@@ -57,19 +57,27 @@ app.use(express.static("public"));
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
 
+
+
+
 // sign-in form
 app.post("/sign-in", (req, res) => {
   if (!req.body.email) {
     res.send("Empty email field. Please try again.")
   }
   if (req.body.password.length === 0) {
-    console.log('B');
     res.send("Empty password field. Please try again.")
   }
   helperFunctions.authenticate(knex, req.body.email, req.body.password)
     .then(result => {
       if (result) {
-        res.redirect("/")
+        helperFunctions.findId(knex, req.body.email)
+        .then(user => {
+          console.log(user)
+          req.session.user_id = user;
+          console.log(req.session.user_id);
+          res.redirect("/")
+        })
       } else {
         res.send("Wrong password or email. Please try again.")
       };
@@ -118,7 +126,6 @@ app.post("/register", (req, res) => {
         password: hashedPassword
       }).returning('id')
       .then((ids) => {
-        // console.log('id', ids)
         req.session.user_id = ids[0]
         res.status(200).send('Ok')
       })
