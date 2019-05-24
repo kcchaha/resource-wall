@@ -89,12 +89,8 @@ app.post("/register", (req, res) => {
     email,
     password
   } = req.body
-  //check if the cookie exists
-  // if (req.session.user_id) {
-  //   res.redirect('/')
 
   //check if email and password exists
-  //} else 
   if (email.length === 0 || password.length === 0) {
     res.status(400).send('Email or password is empty')
   } else {
@@ -104,10 +100,14 @@ app.post("/register", (req, res) => {
         email: email,
         password: hashedPassword
       }).returning('id')
-      .then(ids, error => {
-        if (error)
-          req.session.user_id = ids[0]
+      .then((ids) => {
+        console.log('id', ids)
+        req.session.user_id = ids[0]
         res.status(200).send('Ok')
+      })
+      .catch(error => {
+        console.log('eee', error)
+        res.status(400).send(error)
       })
   }
 
