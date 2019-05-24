@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 
+//////////////////// REQUIREMENTS ////////////////////
 const PORT            = process.env.PORT || 8080;
 const ENV             = process.env.ENV || "development";
 const express         = require("express");
@@ -12,24 +13,25 @@ const sass            = require("node-sass-middleware");
 const cookieSession   = require('cookie-session');
 const app             = express();
 const helperFunctions = require('./lib/util/helper_functions');
-const ogs = require('open-graph-scraper');
+const ogs             = require('open-graph-scraper');
 const methodOverride  = require('method-override')
+const knexConfig      = require("./knexfile");
+const knex            = require("knex")(knexConfig[ENV]);
+const morgan          = require('morgan');
+const knexLogger      = require('knex-logger');
 
-const knexConfig = require("./knexfile");
-const knex = require("knex")(knexConfig[ENV]);
-const morgan = require('morgan');
-const knexLogger = require('knex-logger');
+// Separated Routes for each Resource
+const usersRoutes     = require("./routes/users");
 
-// Seperated Routes for each Resource
-const usersRoutes = require("./routes/users");
 
+
+//////////////////// MIDDLEWARE ////////////////////
 app.use(
   cookieSession({
     name: "session",
     keys: ["key1", "key2"]
   })
 );
-
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -58,8 +60,14 @@ app.use(express.static("public"));
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
 
+
+//////////////////// POST METHODS ////////////////////
+
 // sign-in form
 app.post("/sign-in", (req, res) => {
+  if (helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
   if (!req.body.email) {
     res.send("Empty email field. Please try again.")
   }
@@ -71,9 +79,7 @@ app.post("/sign-in", (req, res) => {
       if (result) {
         helperFunctions.findId(knex, req.body.email)
         .then(user => {
-          console.log(user)
           req.session.user_id = user;
-          console.log(req.session.user_id);
           res.redirect("/")
         })
       } else {
@@ -82,31 +88,11 @@ app.post("/sign-in", (req, res) => {
     });
 });
 
-// update user-password
-app.put("/update-profile", (req, res) => {
-  // add cookie session here?  
-  let inputEmail = req.body.email;
-  let oldPassword = req.body.oldPassword;
-  let newPassword = req.body.newPassword;
-  helperFunctions.updatePassword(knex, inputEmail, oldPassword, newPassword)
-    .then((result) => {
-        if (result) {
-          res.send("Password successfully changed.")
-        }
-        res.send("Wrong password. Please try again.")
-    })
-});
-
-app.get("/update-profile", (req, res) => {
-  res.render("/update-profile")
-});
-
-app.get("/sign-in", (req, res) => {
-  res.render("/sign-in")
-});
-
 //Register page
 app.post("/register", (req, res) => {
+  if (helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
   const {
     email,
     password
@@ -132,6 +118,61 @@ app.post("/register", (req, res) => {
   }
 });
 
+//create a new link
+app.post("/links", (req, res) => {
+  if (req.session.user_id) {
+    const {
+      title,
+      description,
+      url,
+      category
+    } = req.body
+    console.log('req!', req.body)
+
+    knex('links').insert({
+        title: title,
+        description: description,
+        url: url,
+        category: category,
+        created_at: new Date(),
+        user_id: req.session.user_id,
+      })
+      .then((links) => {
+        console.log('table', links)
+        res.status(200).send('Ok')
+      })
+  }
+});
+
+// logout
+app.post("/logout", (req, res) => {
+  req.session = null;
+  res.redirect("/");
+});
+
+
+//////////////////// PUT METHODS ////////////////////
+
+// update user-password
+app.put("/update-profile", (req, res) => {
+  if (!helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
+  let inputEmail = req.body.email;
+  let oldPassword = req.body.oldPassword;
+  let newPassword = req.body.newPassword;
+  helperFunctions.updatePassword(knex, inputEmail, oldPassword, newPassword)
+    .then((result) => {
+        if (result) {
+          res.send("Password successfully changed.")
+        }
+        res.send("Wrong password. Please try again.")
+    })
+});
+
+
+//////////////////// GET METHODS ////////////////////
+
 // Home page
 app.get("/", (req, res) => {
   res.render("index.html");
@@ -156,54 +197,66 @@ app.get("/", (req, res) => {
 //     });
 // }
 
+app.get("/update-profile", (req, res) => {
+  if (!helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
+  res.render("/update-profile")
+});
+
+app.get("/sign-in", (req, res) => {
+  if (helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
+  res.render("/sign-in")
+});
+
 //get links
 app.get("/links", (req, res) => {
   //check if query string exists, search that query in the database and show the ones that have the key
-  const {
-    key
-  } = req.query
+  const { key } = req.query;
   if (key) {
-    knex.select('*')
-      .from('links')
-      .where('title', 'like', `%${key}%`)
-      .orWhere('description', 'like', `%${key}%`)
-      .then((links) => {
+    knex
+      .select("*")
+      .from("links")
+      .where("title", "like", `%${key}%`)
+      .orWhere("description", "like", `%${key}%`)
+      .then(links => {
         const promises = links.map(link => {
           const options = {
-            'url': link.url
-          }
-          return ogs(options)
-            .then(response => {
-              link.imgUrl = response.data.ogImage.url;
-              return link;
-            })
-        })
-        Promise.all(promises)
-          .then(links => {
-            console.log('nev', links);
-            res.send(links)
-          });
-      })
-  } else {
-    knex.select('*').from('links').then((links) => {
-      const promises = links.map(link => {
-        const options = {
-          'url': link.url
-        }
-        return ogs(options)
-          .then(response => {
+            url: link.url
+          };
+          return ogs(options).then(response => {
             link.imgUrl = response.data.ogImage.url;
             return link;
-          })
-      })
-      Promise.all(promises)
-        .then(links => {
-          console.log('nev', links);
-          res.send(links)
+          });
         });
-    })
+        Promise.all(promises).then(links => {
+          console.log("nev", links);
+          res.send(links);
+        });
+      });
+  } else {
+    knex
+      .select("*")
+      .from("links")
+      .then(links => {
+        const promises = links.map(link => {
+          const options = {
+            url: link.url
+          };
+          return ogs(options).then(response => {
+            link.imgUrl = response.data.ogImage.url;
+            return link;
+          });
+        });
+        Promise.all(promises).then(links => {
+          console.log("nev", links);
+          res.send(links);
+        });
+      });
   }
-});
+ });
 
 
 // //get a link
