@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 
+//////////////////// REQUIREMENTS ////////////////////
 const PORT            = process.env.PORT || 8080;
 const ENV             = process.env.ENV || "development";
 const express         = require("express");
@@ -13,22 +14,23 @@ const cookieSession   = require('cookie-session');
 const app             = express();
 const helperFunctions = require('./lib/util/helper_functions');
 const methodOverride  = require('method-override')
+const knexConfig      = require("./knexfile");
+const knex            = require("knex")(knexConfig[ENV]);
+const morgan          = require('morgan');
+const knexLogger      = require('knex-logger');
 
-const knexConfig = require("./knexfile");
-const knex = require("knex")(knexConfig[ENV]);
-const morgan = require('morgan');
-const knexLogger = require('knex-logger');
+// Separated Routes for each Resource
+const usersRoutes     = require("./routes/users");
 
-// Seperated Routes for each Resource
-const usersRoutes = require("./routes/users");
 
+
+//////////////////// MIDDLEWARE ////////////////////
 app.use(
   cookieSession({
     name: "session",
     keys: ["key1", "key2"]
   })
 );
-
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -57,6 +59,9 @@ app.use(express.static("public"));
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
 
+
+//////////////////// POST METHODS ////////////////////
+
 // sign-in form
 app.post("/sign-in", (req, res) => {
   if (!req.body.email) {
@@ -79,29 +84,6 @@ app.post("/sign-in", (req, res) => {
         res.send("Wrong password or email. Please try again.")
       };
     });
-});
-
-// update user-password
-app.put("/update-profile", (req, res) => {
-  // add cookie session here?  
-  let inputEmail = req.body.email;
-  let oldPassword = req.body.oldPassword;
-  let newPassword = req.body.newPassword;
-  helperFunctions.updatePassword(knex, inputEmail, oldPassword, newPassword)
-    .then((result) => {
-        if (result) {
-          res.send("Password successfully changed.")
-        }
-        res.send("Wrong password. Please try again.")
-    })
-});
-
-app.get("/update-profile", (req, res) => {
-  res.render("/update-profile")
-});
-
-app.get("/sign-in", (req, res) => {
-  res.render("/sign-in")
 });
 
 //Register page
@@ -130,6 +112,42 @@ app.post("/register", (req, res) => {
       })
   }
 });
+
+// logout
+app.post("/logout", (req, res) => {
+  req.session = null;
+  res.redirect("/login");
+});
+
+
+//////////////////// PUT METHODS ////////////////////
+
+// update user-password
+app.put("/update-profile", (req, res) => {
+  // add cookie session here?  
+  let inputEmail = req.body.email;
+  let oldPassword = req.body.oldPassword;
+  let newPassword = req.body.newPassword;
+  helperFunctions.updatePassword(knex, inputEmail, oldPassword, newPassword)
+    .then((result) => {
+        if (result) {
+          res.send("Password successfully changed.")
+        }
+        res.send("Wrong password. Please try again.")
+    })
+});
+
+app.get("/update-profile", (req, res) => {
+  res.render("/update-profile")
+});
+
+app.get("/sign-in", (req, res) => {
+  res.render("/sign-in")
+});
+
+
+
+//////////////////// GET METHODS ////////////////////
 
 // Home page
 app.get("/", (req, res) => {
