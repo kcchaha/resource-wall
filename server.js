@@ -12,6 +12,7 @@ const sass = require("node-sass-middleware");
 const cookieSession = require('cookie-session');
 const app = express();
 const helperFunctions = require('./lib/util/helper_functions');
+var ogs = require('open-graph-scraper');
 
 const knexConfig = require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
@@ -112,6 +113,25 @@ app.post("/register", (req, res) => {
 
 });
 
+// //get links helper function
+// function getUrlImage(links) {
+//   const promises = links.map(link => {
+//     const options = {
+//       'url': link.url
+//     }
+//     return ogs(options)
+//       .then(response => {
+//         link.imgUrl = response.data.ogImage.url;
+//         return link;
+//       })
+//   })
+//   Promise.all(promises)
+//     .then(links => {
+//       console.log('nev', links);
+//       res.send(links)
+//     });
+// }
+
 //get links
 app.get("/links", (req, res) => {
   //check if query string exists, search that query in the database and show the ones that have the key
@@ -124,14 +144,43 @@ app.get("/links", (req, res) => {
       .where('title', 'like', `%${key}%`)
       .orWhere('description', 'like', `%${key}%`)
       .then((links) => {
-        res.send(links)
+        const promises = links.map(link => {
+          const options = {
+            'url': link.url
+          }
+          return ogs(options)
+            .then(response => {
+              link.imgUrl = response.data.ogImage.url;
+              return link;
+            })
+        })
+        Promise.all(promises)
+          .then(links => {
+            console.log('nev', links);
+            res.send(links)
+          });
       })
   } else {
     knex.select('*').from('links').then((links) => {
-      res.send(links)
+      const promises = links.map(link => {
+        const options = {
+          'url': link.url
+        }
+        return ogs(options)
+          .then(response => {
+            link.imgUrl = response.data.ogImage.url;
+            return link;
+          })
+      })
+      Promise.all(promises)
+        .then(links => {
+          console.log('nev', links);
+          res.send(links)
+        });
     })
   }
 });
+
 
 // //get a link
 // app.get("/links/:id", (req, res) => {
