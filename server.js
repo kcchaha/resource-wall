@@ -2,16 +2,17 @@
 
 require('dotenv').config();
 
-const PORT = process.env.PORT || 8080;
-const ENV = process.env.ENV || "development";
-const express = require("express");
-const bodyParser = require("body-parser");
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const sass = require("node-sass-middleware");
-const cookieSession = require('cookie-session');
-const app = express();
+const PORT            = process.env.PORT || 8080;
+const ENV             = process.env.ENV || "development";
+const express         = require("express");
+const bodyParser      = require("body-parser");
+const bcrypt          = require('bcrypt');
+const saltRounds      = 10;
+const sass            = require("node-sass-middleware");
+const cookieSession   = require('cookie-session');
+const app             = express();
 const helperFunctions = require('./lib/util/helper_functions');
+const methodOverride  = require('method-override')
 
 const knexConfig = require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
@@ -37,6 +38,9 @@ app.use(morgan('dev'));
 // Log knex SQL queries to STDOUT as well
 app.use(knexLogger(knex));
 
+// To handle PUT form submissions
+app.use(methodOverride('_method'))
+
 
 app.use(express.static(__dirname + '/public/HTML'));
 app.use(bodyParser.urlencoded({
@@ -53,38 +57,38 @@ app.use(express.static("public"));
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
 
-// Home page
-app.get("/", (req, res) => {
-  res.render("index.html");
-});
-
-//standalone authentication-tester
-// const help = helperFunctions.authenticate(knex, "adamcraveiro@gmail.com", "12334343")
-// .then(result => {
-//   display(result)
-//   return result
-// });
-
+// sign-in form
 app.post("/sign-in", (req, res) => {
+  if (!req.body.email) {
+    res.send("Empty email field. Please try again.")
+  }
+  if (req.body.password.length === 0) {
+    console.log('B');
+    res.send("Empty password field. Please try again.")
+  }
   helperFunctions.authenticate(knex, req.body.email, req.body.password)
     .then(result => {
-      // check for true or false
-      // console.log(result)
       if (result) {
         res.redirect("/")
       } else {
-        res.redirect("/sign-in")
+        res.send("Wrong password or email. Please try again.")
       };
     });
 });
 
-// updates a user's longURL
-app.put("/update-profile/:id", (req, res) => {
-  // add cookie session here?
+// update user-password
+app.put("/update-profile", (req, res) => {
+  // add cookie session here?  
   let inputEmail = req.body.email;
+  let oldPassword = req.body.oldPassword;
   let newPassword = req.body.newPassword;
-  helperFunctions.updatePassword(knex, inputEmail, newPassword)
-  res.send("Got a put request at /user")
+  helperFunctions.updatePassword(knex, inputEmail, oldPassword, newPassword)
+    .then((result) => {
+        if (result) {
+          res.send("Password successfully changed.")
+        }
+        res.send("Wrong password. Please try again.")
+    })
 });
 
 app.get("/update-profile", (req, res) => {
@@ -122,7 +126,11 @@ app.post("/register", (req, res) => {
         res.status(400).send(error)
       })
   }
+});
 
+// Home page
+app.get("/", (req, res) => {
+  res.render("index.html");
 });
 
 app.listen(PORT, () => {
