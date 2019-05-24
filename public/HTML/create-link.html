@@ -10,10 +10,20 @@
     integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+  <!-- External Font from Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Pacifico&display=swap" rel="stylesheet"> <!-- font for logo -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet"> <!--font for text-->
+  <link href="https://fonts.googleapis.com/css?family=Pacifico|Permanent+Marker|Raleway&display=swap" rel="stylesheet">
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="/styles/create-link.css" type="text/css" />
 </head>
 
 <body>
-  <h2>Add more details for your link</h2>
+  <p class="logo"><a href="/index.html" class="a">DevX</a></p>
+  <h3>Thank you for sharing your link!  <i class="fas fa-laugh-wink"></i></h3>
+  <p>Add more details for your link</p>
 
   <form>
     <div class="form-group">
@@ -31,8 +41,9 @@
         placeholder="Provide the url of the link here...">
     </div>
     <div class="list-categories">
-      <span>Select a category for you link:</span>
+      <div class="ss">Select a category for you link:</div>
       <select name="categories">
+        <option value="">--Please choose an option--</option>
         <option value="html">HTML</option>
         <option value="css">CSS</option>
         <option value="javascript">Javascript</option>
@@ -42,11 +53,16 @@
       </select>
     </div>
     <br>
-    <input type="submit">
+    <button type="submit">Create</button>
   </form>
 
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script type="text/javascript" src="../scripts/app.js"></script>
+  <script>
+    $(document).ready(() => {
+      $('.dropdown-toggle').dropdown()
+    })
+  </script>
 </body>
 
 </html>

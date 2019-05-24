@@ -57,9 +57,6 @@ app.use(express.static("public"));
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
 
-
-
-
 // sign-in form
 app.post("/sign-in", (req, res) => {
   if (!req.body.email) {
@@ -106,7 +103,6 @@ app.get("/update-profile", (req, res) => {
 app.get("/sign-in", (req, res) => {
   res.render("/sign-in")
 });
-
 
 //Register page
 app.post("/register", (req, res) => {
