@@ -13,7 +13,7 @@ const sass            = require("node-sass-middleware");
 const cookieSession   = require('cookie-session');
 const app             = express();
 const helperFunctions = require('./lib/util/helper_functions');
-const ogs = require('open-graph-scraper');
+const ogs             = require('open-graph-scraper');
 const methodOverride  = require('method-override')
 const knexConfig      = require("./knexfile");
 const knex            = require("knex")(knexConfig[ENV]);
@@ -65,6 +65,9 @@ app.use("/api/users", usersRoutes(knex));
 
 // sign-in form
 app.post("/sign-in", (req, res) => {
+  if (helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
   if (!req.body.email) {
     res.send("Empty email field. Please try again.")
   }
@@ -76,9 +79,7 @@ app.post("/sign-in", (req, res) => {
       if (result) {
         helperFunctions.findId(knex, req.body.email)
         .then(user => {
-          console.log(user)
           req.session.user_id = user;
-          console.log(req.session.user_id);
           res.redirect("/")
         })
       } else {
@@ -89,6 +90,9 @@ app.post("/sign-in", (req, res) => {
 
 //Register page
 app.post("/register", (req, res) => {
+  if (helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
   const {
     email,
     password
@@ -114,10 +118,36 @@ app.post("/register", (req, res) => {
   }
 });
 
+//create a new link
+app.post("/links", (req, res) => {
+  if (req.session.user_id) {
+    const {
+      title,
+      description,
+      url,
+      category
+    } = req.body
+    console.log('req!', req.body)
+
+    knex('links').insert({
+        title: title,
+        description: description,
+        url: url,
+        category: category,
+        created_at: new Date(),
+        user_id: req.session.user_id,
+      })
+      .then((links) => {
+        console.log('table', links)
+        res.status(200).send('Ok')
+      })
+  }
+});
+
 // logout
 app.post("/logout", (req, res) => {
   req.session = null;
-  res.redirect("/login");
+  res.redirect("/");
 });
 
 
@@ -125,7 +155,9 @@ app.post("/logout", (req, res) => {
 
 // update user-password
 app.put("/update-profile", (req, res) => {
-  // add cookie session here?  
+  if (!helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
   let inputEmail = req.body.email;
   let oldPassword = req.body.oldPassword;
   let newPassword = req.body.newPassword;
@@ -137,15 +169,6 @@ app.put("/update-profile", (req, res) => {
         res.send("Wrong password. Please try again.")
     })
 });
-
-app.get("/update-profile", (req, res) => {
-  res.render("/update-profile")
-});
-
-app.get("/sign-in", (req, res) => {
-  res.render("/sign-in")
-});
-
 
 
 //////////////////// GET METHODS ////////////////////
@@ -173,6 +196,20 @@ app.get("/", (req, res) => {
 //       res.send(links)
 //     });
 // }
+
+app.get("/update-profile", (req, res) => {
+  if (!helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
+  res.render("/update-profile")
+});
+
+app.get("/sign-in", (req, res) => {
+  if (helperFunctions.loggedOn(req)) {
+    res.redirect("/")
+  }
+  res.render("/sign-in")
+});
 
 //get links
 app.get("/links", (req, res) => {
@@ -229,32 +266,6 @@ app.get("/links", (req, res) => {
 //   console.log(req.body)
 // });
 
-
-//create a new link
-app.post("/links", (req, res) => {
-  if (req.session.user_id) {
-    const {
-      title,
-      description,
-      url,
-      category
-    } = req.body
-    console.log('req!', req.body)
-
-    knex('links').insert({
-        title: title,
-        description: description,
-        url: url,
-        category: category,
-        created_at: new Date(),
-        user_id: req.session.user_id,
-      })
-      .then((links) => {
-        console.log('table', links)
-        res.status(200).send('Ok')
-      })
-  }
-});
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
