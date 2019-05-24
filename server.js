@@ -13,6 +13,7 @@ const sass            = require("node-sass-middleware");
 const cookieSession   = require('cookie-session');
 const app             = express();
 const helperFunctions = require('./lib/util/helper_functions');
+const ogs = require('open-graph-scraper');
 const methodOverride  = require('method-override')
 const knexConfig      = require("./knexfile");
 const knex            = require("knex")(knexConfig[ENV]);
@@ -152,6 +153,107 @@ app.get("/sign-in", (req, res) => {
 // Home page
 app.get("/", (req, res) => {
   res.render("index.html");
+});
+
+// //get links helper function
+// function getUrlImage(links) {
+//   const promises = links.map(link => {
+//     const options = {
+//       'url': link.url
+//     }
+//     return ogs(options)
+//       .then(response => {
+//         link.imgUrl = response.data.ogImage.url;
+//         return link;
+//       })
+//   })
+//   Promise.all(promises)
+//     .then(links => {
+//       console.log('nev', links);
+//       res.send(links)
+//     });
+// }
+
+//get links
+app.get("/links", (req, res) => {
+  //check if query string exists, search that query in the database and show the ones that have the key
+  const {
+    key
+  } = req.query
+  if (key) {
+    knex.select('*')
+      .from('links')
+      .where('title', 'like', `%${key}%`)
+      .orWhere('description', 'like', `%${key}%`)
+      .then((links) => {
+        const promises = links.map(link => {
+          const options = {
+            'url': link.url
+          }
+          return ogs(options)
+            .then(response => {
+              link.imgUrl = response.data.ogImage.url;
+              return link;
+            })
+        })
+        Promise.all(promises)
+          .then(links => {
+            console.log('nev', links);
+            res.send(links)
+          });
+      })
+  } else {
+    knex.select('*').from('links').then((links) => {
+      const promises = links.map(link => {
+        const options = {
+          'url': link.url
+        }
+        return ogs(options)
+          .then(response => {
+            link.imgUrl = response.data.ogImage.url;
+            return link;
+          })
+      })
+      Promise.all(promises)
+        .then(links => {
+          console.log('nev', links);
+          res.send(links)
+        });
+    })
+  }
+});
+
+
+// //get a link
+// app.get("/links/:id", (req, res) => {
+//   console.log(req.body)
+// });
+
+
+//create a new link
+app.post("/links", (req, res) => {
+  if (req.session.user_id) {
+    const {
+      title,
+      description,
+      url,
+      category
+    } = req.body
+    console.log('req!', req.body)
+
+    knex('links').insert({
+        title: title,
+        description: description,
+        url: url,
+        category: category,
+        created_at: new Date(),
+        user_id: req.session.user_id,
+      })
+      .then((links) => {
+        console.log('table', links)
+        res.status(200).send('Ok')
+      })
+  }
 });
 
 app.listen(PORT, () => {

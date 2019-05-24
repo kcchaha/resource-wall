@@ -25,24 +25,25 @@
   <h3>Thank you for sharing your link!  <i class="fas fa-laugh-wink"></i></h3>
   <p>Add more details for your link</p>
 
-  <form>
+  <form id='newLink'>
     <div class="form-group">
       <label for="formGroupExampleInput">Title</label>
-      <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Give your link a title...">
+      <input name='title' type="text" class="form-control" id="formGroupExampleInput"
+        placeholder="Give your link a title...">
     </div>
     <div class="form-group">
       <label for="formGroupExampleInput2">Description</label>
-      <input type="text" class="form-control" id="formGroupExampleInput2"
+      <input name='description' type="text" class="form-control" id="formGroupExampleInput2"
         placeholder="Add description about your link...">
     </div>
     <div class="form-group">
       <label for="formGroupExampleInput">URL</label>
-      <input type="text" class="form-control" id="formGroupExampleInput"
+      <input name='url' type="text" class="form-control" id="formGroupExampleInput"
         placeholder="Provide the url of the link here...">
     </div>
     <div class="list-categories">
       <div class="ss">Select a category for you link:</div>
-      <select name="categories">
+      <select name="category">
         <option value="">--Please choose an option--</option>
         <option value="html">HTML</option>
         <option value="css">CSS</option>
