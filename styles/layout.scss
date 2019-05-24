@@ -16,6 +16,7 @@
 
 body {
   background-color: #EEE;
+  font-family: 'Raleway', sans-serif;
 
   #main-nav-bar {
     @extend %flex;
@@ -65,15 +66,50 @@ body {
     }
   }
 
-  .container {
+  .main-container {
     width: 100%;
     @extend %flex;
+    flex-direction: column;
+
+    #carouselExampleFade {
+      width: 90%;
+    }
+
     .bd-example {
       width: 100%;
     }
   }
 
+  .link-display {
+
+    margin-top: 3em;
+    .container {
+      @extend %flex;
+      flex-direction: row;
+      justify-content: start;
+      flex-wrap: wrap;
+      .col-sm {
+        @extend %flex;
+        flex-direction: column;
+        border: solid 1px #999999;
+        height: 250px;
+        width: 18em;
+        margin: 1em 1em;
+
+        img {
+          height: 11em;
+          width: 11em;
+        }
+
+        span {
+          float: left;
+        }
+      }
+    }
+  }
   
 }
+
+
 
 
