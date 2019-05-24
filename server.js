@@ -190,7 +190,28 @@ app.get("/links", (req, res) => {
 
 //create a new link
 app.post("/links", (req, res) => {
-  console.log('req!', req.body)
+  if (req.session.user_id) {
+    const {
+      title,
+      description,
+      url,
+      category
+    } = req.body
+    console.log('req!', req.body)
+
+    knex('links').insert({
+        title: title,
+        description: description,
+        url: url,
+        category: category,
+        created_at: new Date(),
+        user_id: req.session.user_id,
+      })
+      .then((links) => {
+        console.log('table', links)
+        res.status(200).send('Ok')
+      })
+  }
 });
 
 app.listen(PORT, () => {

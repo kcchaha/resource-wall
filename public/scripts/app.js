@@ -5,10 +5,10 @@ function register() {
       url: '/register',
       type: 'POST',
       data: $(this).serialize()
-    }).done(function (error) {
+    }).done(function () {
       window.location.replace('/')
     }).fail(err => {
-      $('.is-member span').text('This email already exists')
+      $('.is-member span.member').text('This email already exists')
     })
   })
 }
@@ -63,7 +63,7 @@ function addLinksToPage(links) {
   //add category
   //create a category object to assign icons to the links
   links.forEach(link => {
-    $('#link-container').append(`<div class='one-link'><img src=${link.imgUrl}></img>, ${link.title}, ${link.url}, ${link.description}}</div>`)
+    $('#link-container').prepend(`<div class='one-link'><img src=${link.imgUrl}></img>, ${link.title}, ${link.url}, ${link.description}}</div>`)
   })
 }
 
@@ -75,8 +75,7 @@ function createLink() {
       method: "POST",
       url: '/links',
       data: $(this).serialize()
-    }).done(function (data) {
-      console.log(data)
+    }).done(function () {
       window.location.replace('/')
     })
   })
