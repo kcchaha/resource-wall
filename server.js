@@ -101,12 +101,11 @@ app.post("/register", (req, res) => {
         password: hashedPassword
       }).returning('id')
       .then((ids) => {
-        console.log('id', ids)
+        // console.log('id', ids)
         req.session.user_id = ids[0]
         res.status(200).send('Ok')
       })
       .catch(error => {
-        console.log('eee', error)
         res.status(400).send(error)
       })
   }
