@@ -112,6 +112,30 @@ app.post("/register", (req, res) => {
 
 });
 
+//get links
+app.get("/links", (req, res) => {
+  //check if query string exists, search that query in the database and show the ones that have the key
+  const {
+    key
+  } = req.query
+  if (key) {
+    knex.select('*').from('links').where('title', 'like', `%${key}%`).then((links) => {
+      res.send(links)
+    })
+  } else {
+    knex.select('*').from('links').then((links) => {
+      res.send(links)
+    })
+  }
+});
+
+// //get a link
+// app.get("/links/:id", (req, res) => {
+
+
+// });
+
+
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
