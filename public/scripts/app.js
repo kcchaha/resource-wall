@@ -40,6 +40,7 @@ function getLinks() {
         method: "GET",
         url: `/links?key=${inputText}`
       }).done(function (links) {
+        console.log(links)
         addLinksToPage(links)
       })
     }
@@ -59,6 +60,8 @@ function loadLinks() {
 }
 
 function addLinksToPage(links) {
+  //add category
+  //create a category object to assign icons to the links
   links.forEach(link => {
     $('#link-container').append(`<div class='one-link'>${link.title}, ${link.url}, ${link.description}}</div>`)
   })

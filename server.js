@@ -119,6 +119,7 @@ app.get("/links", (req, res) => {
     key
   } = req.query
   if (key) {
+    //add or to search for description and url
     knex.select('*').from('links').where('title', 'like', `%${key}%`).then((links) => {
       res.send(links)
     })
