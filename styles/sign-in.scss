@@ -6,6 +6,15 @@
     height: 100%;
 }
 
+%a {.a {
+    color: white;
+}
+    .a:hover {
+        color: #999999;
+        text-decoration: none;
+    }
+}
+
 @import 'logo';
 
 body {
@@ -24,9 +33,11 @@ body {
     .logo {
         margin-top: 2em;
         font-size: 3em;
+        @extend %a;
     }
 
   #sign-in-form {
+      width: 30em;
       margin-top: 5em;
       margin-bottom: 2em;
       label {

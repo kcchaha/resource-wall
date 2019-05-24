@@ -27,6 +27,9 @@ body {
     #search {
       @extend %flex;
       input {
+
+          padding-left: 1em;
+
         border-radius: 5px;
         width: 30em;
         height: 1.8em;
@@ -44,9 +47,15 @@ body {
       margin-left: auto;
       @extend %sign;
       @extend %font-color;
+      .aa {
+        color: white;
+      }
     }
 
     #signup {
+      .aa {
+        color: white;
+      }
       @extend %sign;
       @extend %font-color;
     }
@@ -62,6 +71,9 @@ body {
     background-color: gainsboro;
 
     span {
+      .bb {
+        color: black;
+      }
       margin-left: 3em;
     }
   }
