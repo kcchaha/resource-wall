@@ -2,45 +2,135 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
   }
+
+  %column {
+      flex-direction: column;
+  }
+
+  %full {
+      width: 100%;
+  }
+
+  %a {.abc {
+    color: #fff;
+  }
+    .abc:hover {
+        color: #999999;
+        text-decoration: none;
+    }
+  }
+
+  %comment {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+  }
+
+  @import 'logo';
 
   body {
       margin: 0;
-
+      font-family: 'Raleway', sans-serif;
       flex-direction: column;
+      background-color: #565555;
 
       #nav-bar {
+        position: fixed;
+        z-index: 1;
+        top: 0;
         @extend %flex;
         width: 100%;
-        background-color: #999999   ;
+        background-color: #313131;
         height: 8em;
         justify-content: start;
+        color: white;
+
+        .logo {
+            @extend %a;
+        }
 
         .icon i {
-            font-size: 50px;
+            font-size: 40px;
             margin: .5em;
         }
 
         .info {
             h3 {
-                font-size: 25px;
+                font-size: 20px;
             }
             p{
-                font-size: 18px;
+                font-size: 15px;
             }
         }
 
         .butt {
             margin-left: auto;
             margin-right: 2em;
+            color: black;
             button {
+                background-color: whitesmoke;
+                color: #757575;
                 height: 50px;
                 width: 100px;
-                border: 1px solid #999999;
+                // border: 1px solid #999999;
                 border-radius: 10px;
+                border: none;
                 margin-left: .5em;
+                i {
+                    margin-right: 5px;
+                }
+            }
+            button:hover {
+                background-color: white;
+                color: black;
             }
         }
+      }
+
+      main {
+          @extend %flex;
+          @extend %column;
+          margin-top: 12em;
+          @extend %full;
+
+          .description {
+            display: flex;
+            height: 100%;
+            @extend %column;
+            @extend %full;
+            color: white;
+
+            p, .rr, .linkurl {
+                margin-left: 2em;
+                margin-right: 2em;
+                margin-top: 2em;
+                font-size: 1.5em;
+            }
+
+            .rating {
+                margin-right: auto;
+                margin-left: 2.5em;
+                margin-bottom: 2em;
+            }
+          }
+
+          .comment-area {
+              display: flex;
+              flex-direction: row;
+              @extend %full;
+
+              #input-comment {
+                  @extend %comment;
+                  margin-right: 1em;
+              }
+
+              .new-comment {
+                @extend %comment;
+                margin-left: 1em;
+              }
+          }
+
+          
       }
   }

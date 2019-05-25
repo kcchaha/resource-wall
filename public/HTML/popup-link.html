@@ -28,14 +28,14 @@
 
   <!-- Top nav bar -->
   <nav id="nav-bar">
+    <span class="logo"><a class="abc" href="/index.html">DevX</a></span>
     <div class="icon"><i class="fas fa-user-astronaut"></i></div>
     <div class="info">
       <h3>HTML wikipedia</h3>
       <p>by Chenchen</p>
     </div>
     <div class="butt">
-      <button><i class="fas fa-save"></i>   Save</button>
-      <button><i class="fas fa-heart"></i>   Like</button>
+      <button type="submit"><i class="fas fa-heart"></i>Like</button>
   </div>
   </nav>
 
@@ -43,9 +43,9 @@
   <!-- Page-specific (main) content here -->
   <main class="container">
     <div class="description">
-      <p>This is the description of this link made by the creator. In this link, it is a brief introduction of HTML</p>
-      <span><a href="https://en.wikipedia.org/wiki/HTML" target="_blank">Click here to see the resource</a></span>
-      <span>Rate this resource</span>
+      <p>This is the description of this link made by the creator. In this link, it is a brief introduction of HTML. In this link, it is a brief introduction of HTML.In this link, it is a brief introduction of HTML</p>
+      <span class="linkurl"><a href="https://en.wikipedia.org/wiki/HTML" target="_blank">Click here to see the resource</a></span>
+      <span class="rr">Rate this resource</span>
       <fieldset class="rating">
         <input type="radio" id="star5" name="rating" value="5" /><label class="full" for="star5"
           title="Awesome - 5 stars"></label>
@@ -60,22 +60,19 @@
       </fieldset>
     </div>
 
+  <div class="comment-area">
     <form id="input-comment" action="" method="POST">
       <textarea name="text" placeholder="Share your feedback about this resource with others..."
         id="textInput"></textarea>
-      <div class="alert alert-danger" id="zeroInput">
-        <strong>Error!</strong> Let's say something!
-      </div>
-      <div class="alert alert-danger" id="overMax">
-        <strong>Error!</strong> The max length of your comment is exceeded.
-      </div>
       <input type="submit" value="Comment">
-      <span class="counter">300</span>
     </form>
 
-    <section>
-      <!--The field for displaying all the comments-->
+    <section class="new-comment">
+      <p class="single-comment">This resource is helpful</p>
+      <i class="fas fa-retweet"></i>
+      <i class="fas fa-heart"></i>
     </section>
+  </div>
   </main>
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script type="text/javascript" src="../scripts/app.js"></script>
