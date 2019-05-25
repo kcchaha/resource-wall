@@ -1,3 +1,5 @@
+var loggedIn;
+
 function register() {
   $("#sign-up-form").on("submit", function (event) {
     event.preventDefault();
@@ -8,6 +10,7 @@ function register() {
       })
       .done(function () {
         window.location.replace("/");
+        checkUser();
       })
       .fail(err => {
         $(".is-member span.member").text("This email already exists");
@@ -24,7 +27,9 @@ function login() {
       url: $(this).attr("action"),
       data: $(this).serialize()
     }).done(function () {
+      console.log('done!!')
       window.location.replace("/");
+      checkUser();
     });
   });
 }
@@ -88,16 +93,44 @@ function createLink() {
   });
 }
 
-// function checkForCookie() {
-//   if (document.cookie) {
-//     $("#signin").hide()
-//     $("#signup").hide()
-//   } else {
-//     $(".form-inline button").hide()
-//   }
-// }
+//get a link
+function getAlink() {
+  $.ajax({
+    method: "GET",
+    url: "/links/:id/comment",
+    data: $(this).serialize()
+  }).done(function () {
+    window.location.replace("/");
+  });
+}
+
+function hideButtons() {
+  if (loggedIn) {
+    console.log('if block')
+    $(".form-group.mb-2 button").on("click", function () {
+      document.cookie = "session.sig = ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+      window.location.reload()
+    })
+    $("span#signin").hide()
+    $("span#signup").hide()
+  } else {
+    console.log('else')
+    $(".form-group.mb-2 button").hide()
+  }
+}
+
+function checkUser() {
+  $.ajax({
+    method: "GET",
+    url: "/check_user",
+  }).done(function (data) {
+    loggedIn = data.loggedOn;
+    hideButtons()
+  });
+}
 
 $(document).ready(function () {
+  checkUser();
   loadLinks();
   getLinks();
   register();

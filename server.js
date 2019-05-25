@@ -264,7 +264,12 @@ app.get("/links", (req, res) => {
 });
 
 // //get a link
-// app.get("/links/:id", (req, res) => {
+// app.get("/links/:id/comment", (req, res) => {
+//   console.log(req.body)
+// });
+
+//like
+// app.get("/links/:id/like", (req, res) => {
 //   console.log(req.body)
 // });
 
@@ -294,6 +299,13 @@ app.post("/links", (req, res) => {
       });
   }
 });
+
+app.get("/check_user", (req, res) => {
+  const value = helperFunctions.loggedOn(req)
+  res.json({
+    loggedOn: value
+  })
+})
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
