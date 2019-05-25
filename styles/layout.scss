@@ -73,6 +73,12 @@ body {
       @extend %sign;
       @extend %font-color;
     }
+
+    .form-inline {
+      button {
+        margin-left: auto;
+      }
+    }
   }
 
   @import 'logo';

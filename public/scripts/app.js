@@ -42,7 +42,7 @@ function getLinks() {
     event.preventDefault();
     const inputText = $("#search input").val();
     if (inputText) {
-      $(".link-display").empty();
+      // $(".link-display").empty();
       $.ajax({
         method: "GET",
         url: `/links?key=${inputText}`
