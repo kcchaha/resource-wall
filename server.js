@@ -271,10 +271,10 @@ app.get("/links", (req, res) => {
   }
 });
 
-// //get a link
-// app.get("/links/:id/comment", (req, res) => {
-//   console.log(req.body)
-// });
+//get a link
+app.get("/link", (req, res) => {
+  console.log('bip;', req.body)
+});
 
 //like
 // app.get("/links/:id/like", (req, res) => {

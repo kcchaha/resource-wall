@@ -21,13 +21,11 @@ function register() {
 function login() {
   $("#sign-in-form").on("submit", function (event) {
     event.preventDefault();
-    console.log("This is working!");
     $.ajax({
       method: "POST",
       url: $(this).attr("action"),
       data: $(this).serialize()
     }).done(function () {
-      console.log('done!!')
       window.location.replace("/");
       checkUser();
     });
@@ -74,6 +72,7 @@ function addLinksToPage(links) {
       `<a href='/popup-link.html'><div class='one-link'>
         <img src=${link.imgUrl}></img>
         <span class='one-link-title'>${link.title}</span>
+        <span style='display:none' class='one-link-url'>${link.url}</span>
         </div></a>`
     );
   });
@@ -94,28 +93,30 @@ function createLink() {
 }
 
 //get a link
-function getAlink() {
-  $.ajax({
-    method: "GET",
-    url: "/links/:id/comment",
-    data: $(this).serialize()
-  }).done(function () {
-    window.location.replace("/");
-  });
+function getALink() {
+  $('.link-display a').on('click', function () {
+    $.ajax({
+      method: "GET",
+      url: "/link",
+      data: $(this).serialize()
+    }).done(function () {
+      console.log('here!')
+    });
+  })
 }
 
-function hideButtons() {
+function displayButtons() {
   if (loggedIn) {
-    console.log('if block')
-    $(".form-group.mb-2 button").on("click", function () {
-      document.cookie = "session.sig = ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
-      window.location.reload()
-    })
-    $("span#signin").hide()
-    $("span#signup").hide()
+    $(".buttons-block").append(`
+    <form class="form-inline" action="/logout" method="POST">
+    <div class="form-group mb-2">
+      <button type="submit" class="btn btn-primary">Logout</button>
+    </div>
+  </form>
+    `)
   } else {
-    console.log('else')
-    $(".form-group.mb-2 button").hide()
+    $(".buttons-block").append(` <span id="signin"><a class="aa" href="/sign-in.html">Sign in</a></span>
+    <span id="signup"><a class="aa" href="/sign-up.html">Sign up</a></span>`)
   }
 }
 
@@ -125,7 +126,7 @@ function checkUser() {
     url: "/check_user",
   }).done(function (data) {
     loggedIn = data.loggedOn;
-    hideButtons()
+    displayButtons()
   });
 }
 
@@ -136,13 +137,5 @@ $(document).ready(function () {
   register();
   login();
   createLink();
-
-  // //hide logout if logged in
-  // if (document.cookie) {
-  //   //when log out button is clicked empty the cookie
-  //   $(".aa").hide()
-  // } else {
-  //   $(".form-inline button").hide()
-  // }
-
+  getALink();
 });
