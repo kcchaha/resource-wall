@@ -57,26 +57,33 @@ body {
         border: 0;
       }
     }
-    #signin {
-      margin-left: auto;
-      @extend %sign;
-      @extend %font-color;
-      .aa {
-        color: white;
-      }
-    }
 
-    #signup {
-      .aa {
-        color: white;
+    .buttons-block {
+      margin-left: auto;
+      #signin {
+        margin-left: auto;
+        @extend %sign;
+        @extend %font-color;
+        .aa {
+          color: white;
+        }
       }
-      @extend %sign;
-      @extend %font-color;
+  
+      #signup {
+        .aa {
+          color: white;
+        }
+        @extend %sign;
+        @extend %font-color;
+      }
     }
+    
 
     .form-inline {
       button {
         margin-left: auto;
+        margin-right: 2em;
+        border: none;
       }
     }
   }
