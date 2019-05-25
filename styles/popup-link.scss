@@ -1,0 +1,24 @@
+%flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+  }
+
+  body {
+      margin: 0;
+
+      flex-direction: column;
+
+      #nav-bar {
+        @extend %flex;
+        width: 100%;
+        background-color: #999999   ;
+        height: 7em;
+        justify-content: start;
+
+        .icon i {
+            font-size: 50px;
+        }
+      }
+  }
