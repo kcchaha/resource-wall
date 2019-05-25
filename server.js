@@ -174,6 +174,14 @@ app.put("/update-profile", (req, res) => {
     });
 });
 
+app.get("/update-profile", (req, res) => {
+  res.render("/update-profile")
+});
+
+app.get("/sign-in", (req, res) => {
+  res.render("/sign-in")
+});
+
 //////////////////// GET METHODS ////////////////////
 
 // Home page
