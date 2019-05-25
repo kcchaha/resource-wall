@@ -1,12 +1,12 @@
 function register() {
-  $("#sign-up-form").on("submit", function(event) {
+  $("#sign-up-form").on("submit", function (event) {
     event.preventDefault();
     $.ajax({
-      url: "/register",
-      type: "POST",
-      data: $(this).serialize()
-    })
-      .done(function() {
+        url: "/register",
+        type: "POST",
+        data: $(this).serialize()
+      })
+      .done(function () {
         window.location.replace("/");
       })
       .fail(err => {
@@ -16,14 +16,14 @@ function register() {
 }
 
 function login() {
-  $("#sign-in-form").on("submit", function(event) {
+  $("#sign-in-form").on("submit", function (event) {
     event.preventDefault();
     console.log("This is working!");
     $.ajax({
       method: "POST",
       url: $(this).attr("action"),
       data: $(this).serialize()
-    }).done(function() {
+    }).done(function () {
       window.location.replace("/");
     });
   });
@@ -33,7 +33,7 @@ function login() {
 function getLinks() {
   //hide the present links
   //show searched link
-  $("#search button").on("click", function(event) {
+  $("#search button").on("click", function (event) {
     event.preventDefault();
     const inputText = $("#search input").val();
     if (inputText) {
@@ -41,7 +41,7 @@ function getLinks() {
       $.ajax({
         method: "GET",
         url: `/links?key=${inputText}`
-      }).done(function(links) {
+      }).done(function (links) {
         console.log(links);
         addLinksToPage(links);
       });
@@ -54,7 +54,7 @@ function loadLinks() {
   $.ajax({
     method: "GET",
     url: "/links"
-  }).done(function(links) {
+  }).done(function (links) {
     $(".link-display").empty();
     console.log("ll", links);
     addLinksToPage(links);
@@ -77,19 +77,19 @@ function addLinksToPage(links) {
 
 //create a new link
 function createLink() {
-  $("#newLink").on("submit", function() {
+  $("#newLink").on("submit", function () {
     event.preventDefault();
     $.ajax({
       method: "POST",
       url: "/links",
       data: $(this).serialize()
-    }).done(function() {
+    }).done(function () {
       window.location.replace("/");
     });
   });
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
   loadLinks();
   getLinks();
   register();
