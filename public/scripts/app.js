@@ -66,11 +66,10 @@ function addLinksToPage(links) {
   //create a category object to assign icons to the links
   links.forEach(link => {
     $(".link-display").prepend(
-      `<div class='one-link'>
-      <a href='#'>
+      `<a href='#'><div class='one-link'>
         <img src=${link.imgUrl}></img>
         <span class='one-link-title'>${link.title}</span>
-        </a></div>`
+        </div></a>`
     );
   });
 }

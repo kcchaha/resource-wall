@@ -3,22 +3,22 @@
 require("dotenv").config();
 
 //////////////////// REQUIREMENTS ////////////////////
-const PORT = process.env.PORT || 8080;
-const ENV = process.env.ENV || "development";
-const express = require("express");
-const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
-const sass = require("node-sass-middleware");
-const cookieSession = require("cookie-session");
-const app = express();
-const helperFunctions = require("./lib/util/helper_functions");
-const ogs = require("open-graph-scraper");
-const methodOverride = require("method-override");
-const knexConfig = require("./knexfile");
-const knex = require("knex")(knexConfig[ENV]);
-const morgan = require("morgan");
-const knexLogger = require("knex-logger");
+const PORT            = process.env.PORT || 8080;
+const ENV             = process.env.ENV || "development";
+const express         = require("express");
+const bodyParser      = require("body-parser");
+const bcrypt          = require('bcrypt');
+const saltRounds      = 10;
+const sass            = require("node-sass-middleware");
+const cookieSession   = require('cookie-session');
+const app             = express();
+const helperFunctions = require('./lib/util/helper_functions');
+const ogs             = require('open-graph-scraper');
+const methodOverride  = require('method-override')
+const knexConfig      = require("./knexfile");
+const knex            = require("knex")(knexConfig[ENV]);
+const morgan          = require('morgan');
+const knexLogger      = require('knex-logger');
 
 // Separated Routes for each Resource
 const usersRoutes = require("./routes/users");
@@ -251,7 +251,7 @@ app.get("/links", (req, res) => {
         });
       });
   }
-});
+ });
 
 // //get a link
 // app.get("/links/:id", (req, res) => {
