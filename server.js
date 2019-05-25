@@ -199,6 +199,13 @@ app.get("/update-profile", (req, res) => {
   res.render("/update-profile");
 });
 
+app.get("/container", (req, res) => {
+  if (!helperFunctions.loggedOn(req)) {
+    res.redirect("/");
+  }
+  res.render("/container");
+});
+
 app.get("/sign-in", (req, res) => {
   if (helperFunctions.loggedOn(req)) {
     res.redirect("/");
