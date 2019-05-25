@@ -15,19 +15,18 @@ function register() {
   });
 }
 
-// function login() {
-//   $("#sign-in-form").on("submit", function(event) {
-//     event.preventDefault();
-//     console.log("This is working!");
-//     $.ajax({
-//       method: "POST",
-//       url: $(this).attr("action"),
-//       data: $(this).serialize()
-//     }).done(function() {
-//       window.location.replace("/");
-//     });
-//   });
-// }
+function container() {
+  $("#my-container").on("click", function(event) {
+    event.preventDefault();
+    $.ajax({
+      method: "GET",
+      url: "/container"
+    }).done(function() {
+      console.log("I hate AJAX")
+      // window.location.replace("/container");
+    });
+  });
+}
 
 //search bar-> get links
 function getLinks() {
@@ -51,11 +50,11 @@ function getLinks() {
 
 // my container links
 // function containerLinks() {
-//   $.ajax({
+//   $ajax({
 //     method: "GET",
 //     url: "/container"
-//   }).done(function() {
-//     $("#user-email").text("Hello!")
+//   }).done(function(links) {
+//     addLinksToPage(links);
 //   })
 // }
 
@@ -103,7 +102,7 @@ $(document).ready(function() {
   loadLinks();
   getLinks();
   register();
-  login();
+  container();
   createLink();
-  containerLinks();
+  // containerLinks();
 });

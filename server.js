@@ -42,7 +42,6 @@ app.use(knexLogger(knex));
 // To handle PUT form submissions
 app.use(methodOverride("_method"));
 
-app.use(express.static(__dirname + "/public/HTML"));
 app.use(
   bodyParser.urlencoded({
     extended: true
@@ -58,6 +57,8 @@ app.use(
   })
 );
 app.use(express.static("public"));
+
+app.use(express.static(__dirname + "/public/HTML"));
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
@@ -200,11 +201,20 @@ app.get("/update-profile", (req, res) => {
 });
 
 app.get("/container", (req, res) => {
-  if (!helperFunctions.loggedOn(req)) {
-    res.redirect("/");
-  }
-  res.render("/container");
+  console.log("Hello!")
+  // if (!helperFunctions.loggedOn(req)) {
+  //   res.redirect("/sign-in.html");
+  // }
+  res.send("/container")
 });
+
+app.get("/user", (req, res) => {
+  helperFunctions.findUserLinks(knex, req.session.user_id)
+  .then(user => {
+    console.log("User::::::::: ", user);
+    res.json(user);
+  })
+})
 
 app.get("/sign-in", (req, res) => {
   if (helperFunctions.loggedOn(req)) {
