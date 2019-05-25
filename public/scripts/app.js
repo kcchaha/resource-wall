@@ -88,10 +88,28 @@ function createLink() {
   });
 }
 
+// function checkForCookie() {
+//   if (document.cookie) {
+//     $("#signin").hide()
+//     $("#signup").hide()
+//   } else {
+//     $(".form-inline button").hide()
+//   }
+// }
+
 $(document).ready(function () {
   loadLinks();
   getLinks();
   register();
   login();
   createLink();
+
+  // //hide logout if logged in
+  // if (document.cookie) {
+  //   //when log out button is clicked empty the cookie
+  //   $(".aa").hide()
+  // } else {
+  //   $(".form-inline button").hide()
+  // }
+
 });
