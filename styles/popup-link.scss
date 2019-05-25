@@ -93,6 +93,7 @@
           @extend %column;
           margin-top: 12em;
           @extend %full;
+          height: 100%;
 
           .description {
             display: flex;
@@ -100,6 +101,15 @@
             @extend %column;
             @extend %full;
             color: white;
+
+            .linka {
+                color: #ea4c88;
+                text-decoration: underline;
+            }
+            .linka:hover {
+                color: white;
+            }
+
 
             p, .rr, .linkurl {
                 margin-left: 2em;
@@ -119,16 +129,60 @@
               display: flex;
               flex-direction: row;
               @extend %full;
+              height: 100%;
+              margin-bottom: 5em;
+              
 
               #input-comment {
-                  @extend %comment;
                   margin-right: 1em;
+                  width: 50%;
+
+                  textarea {
+                      height: 12em;
+                      border: 0;
+                      border-radius: 8px;
+                      padding: 1em 1em;
+                      margin-bottom: 1em;
+                      width: 100%;
+                  }
+
+                  button {
+                    width: 100%;
+                    background-color: rgb(234, 76, 136);
+                    border: 0;
+                    border-radius: 4px;
+                    height: 40px;
+                    color: white;
+
+                  }
               }
 
-              .new-comment {
-                @extend %comment;
-                margin-left: 1em;
-              }
+             .comment-display-area {
+                 @extend %flex;
+                 @extend %column;
+                 @extend %comment;
+
+                 .new-comment {
+
+                    margin-left: 5em;
+                    border-bottom: #999999 1px solid;
+                    margin-bottom: 1em;
+
+                    p {
+                        color: white;
+                    }
+    
+                    .comment-icon {
+                        margin-left: auto;
+                        color: white;
+
+                       .heart:hover {
+                           color: red;
+                       }
+
+                    }
+                  }
+             }
           }
 
           

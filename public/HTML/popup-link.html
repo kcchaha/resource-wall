@@ -44,7 +44,7 @@
   <main class="container">
     <div class="description">
       <p>This is the description of this link made by the creator. In this link, it is a brief introduction of HTML. In this link, it is a brief introduction of HTML.In this link, it is a brief introduction of HTML</p>
-      <span class="linkurl"><a href="https://en.wikipedia.org/wiki/HTML" target="_blank">Click here to see the resource</a></span>
+      <span class="linkurl"><a class="linka" href="https://en.wikipedia.org/wiki/HTML" target="_blank">Click here to see the resource</a></span>
       <span class="rr">Rate this resource</span>
       <fieldset class="rating">
         <input type="radio" id="star5" name="rating" value="5" /><label class="full" for="star5"
@@ -64,14 +64,23 @@
     <form id="input-comment" action="" method="POST">
       <textarea name="text" placeholder="Share your feedback about this resource with others..."
         id="textInput"></textarea>
-      <input type="submit" value="Comment">
+        <button type="submit">Commit</button>
     </form>
 
+    <div class="comment-display-area">
     <section class="new-comment">
-      <p class="single-comment">This resource is helpful</p>
-      <i class="fas fa-retweet"></i>
-      <i class="fas fa-heart"></i>
+      <p class="single-comment">This resource is helpful. This resource is helpful. This resource is helpful. This resource is helpful. This resource is helpful. What can we do with other stuff?</p>
+      <div class="comment-icon">
+      <p class="heart"><i class="fas fa-heart"></i></p>
+    </div>
     </section>
+    <section class="new-comment">
+      <p class="single-comment">This resource is helpful. This resource is helpful. This resource is helpful. This resource is helpful. This resource is helpful. What can we do with other stuff?</p>
+      <div class="comment-icon">
+      <p class="heart"><i class="fas fa-heart"></i></p>
+    </div>
+    </section>
+  </div>
   </div>
   </main>
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
