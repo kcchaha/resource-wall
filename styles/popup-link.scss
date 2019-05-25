@@ -14,11 +14,33 @@
         @extend %flex;
         width: 100%;
         background-color: #999999   ;
-        height: 7em;
+        height: 8em;
         justify-content: start;
 
         .icon i {
             font-size: 50px;
+            margin: .5em;
+        }
+
+        .info {
+            h3 {
+                font-size: 25px;
+            }
+            p{
+                font-size: 18px;
+            }
+        }
+
+        .butt {
+            margin-left: auto;
+            margin-right: 2em;
+            button {
+                height: 50px;
+                width: 100px;
+                border: 1px solid #999999;
+                border-radius: 10px;
+                margin-left: .5em;
+            }
         }
       }
   }
