@@ -1,13 +1,16 @@
+var loggedIn;
+
 function register() {
-  $("#sign-up-form").on("submit", function(event) {
+  $("#sign-up-form").on("submit", function (event) {
     event.preventDefault();
     $.ajax({
-      url: "/register",
-      type: "POST",
-      data: $(this).serialize()
-    })
-      .done(function() {
+        url: "/register",
+        type: "POST",
+        data: $(this).serialize()
+      })
+      .done(function () {
         window.location.replace("/");
+        checkUser();
       })
       .fail(err => {
         $(".is-member span.member").text("This email already exists");
@@ -16,15 +19,17 @@ function register() {
 }
 
 function login() {
-  $("#sign-in-form").on("submit", function(event) {
+  $("#sign-in-form").on("submit", function (event) {
     event.preventDefault();
     console.log("This is working!");
     $.ajax({
       method: "POST",
       url: $(this).attr("action"),
       data: $(this).serialize()
-    }).done(function() {
+    }).done(function () {
+      console.log('done!!')
       window.location.replace("/");
+      checkUser();
     });
   });
 }
@@ -33,7 +38,7 @@ function login() {
 function getLinks() {
   //hide the present links
   //show searched link
-  $("#search button").on("click", function(event) {
+  $("#search button").on("click", function (event) {
     event.preventDefault();
     const inputText = $("#search input").val();
     if (inputText) {
@@ -41,7 +46,7 @@ function getLinks() {
       $.ajax({
         method: "GET",
         url: `/links?key=${inputText}`
-      }).done(function(links) {
+      }).done(function (links) {
         console.log(links);
         addLinksToPage(links);
       });
@@ -54,7 +59,7 @@ function loadLinks() {
   $.ajax({
     method: "GET",
     url: "/links"
-  }).done(function(links) {
+  }).done(function (links) {
     $(".link-display").empty();
     console.log("ll", links);
     addLinksToPage(links);
@@ -76,22 +81,68 @@ function addLinksToPage(links) {
 
 //create a new link
 function createLink() {
-  $("#newLink").on("submit", function() {
+  $("#newLink").on("submit", function () {
     event.preventDefault();
     $.ajax({
       method: "POST",
       url: "/links",
       data: $(this).serialize()
-    }).done(function() {
+    }).done(function () {
       window.location.replace("/");
     });
   });
 }
 
-$(document).ready(function() {
+//get a link
+function getAlink() {
+  $.ajax({
+    method: "GET",
+    url: "/links/:id/comment",
+    data: $(this).serialize()
+  }).done(function () {
+    window.location.replace("/");
+  });
+}
+
+function hideButtons() {
+  if (loggedIn) {
+    console.log('if block')
+    $(".form-group.mb-2 button").on("click", function () {
+      document.cookie = "session.sig = ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+      window.location.reload()
+    })
+    $("span#signin").hide()
+    $("span#signup").hide()
+  } else {
+    console.log('else')
+    $(".form-group.mb-2 button").hide()
+  }
+}
+
+function checkUser() {
+  $.ajax({
+    method: "GET",
+    url: "/check_user",
+  }).done(function (data) {
+    loggedIn = data.loggedOn;
+    hideButtons()
+  });
+}
+
+$(document).ready(function () {
+  checkUser();
   loadLinks();
   getLinks();
   register();
   login();
   createLink();
+
+  // //hide logout if logged in
+  // if (document.cookie) {
+  //   //when log out button is clicked empty the cookie
+  //   $(".aa").hide()
+  // } else {
+  //   $(".form-inline button").hide()
+  // }
+
 });
