@@ -271,10 +271,20 @@ app.get("/links", (req, res) => {
   }
 });
 
-//get a link
-app.get("/link", (req, res) => {
-  console.log('bip;', req.body)
-});
+app.get("/links/:link_id", (req, res) => {
+  knex("links").leftOuterJoin("user_credentials", "links.user_id", "=", "user_credentials.id")
+    .select("*")
+    .where("links.id", "=", `${req.params.link_id}`)
+    .then(link => {
+      console.log(link)
+      res.send(link)
+    });
+})
+
+// //get a link
+// app.get("/link", (req, res) => {
+//   console.log('bip;', req.body)
+// });
 
 //like
 // app.get("/links/:id/like", (req, res) => {
@@ -315,9 +325,9 @@ app.get("/check_user", (req, res) => {
   })
 })
 
-app.get('/:link', (req, res) => {
-  console.log(req.params.link);
-})
+// app.get('/:link', (req, res) => {
+//   console.log(req.params.link);
+// })
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);

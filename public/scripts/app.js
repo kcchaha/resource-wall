@@ -73,7 +73,7 @@ function addLinksToPage(links) {
   //create a category object to assign icons to the links
   links.forEach(link => {
     $(".link-display").prepend(
-      `<a class="go-to-link" href='/popup-link.html'><div class='one-link'>
+      `<a class="go-to-link" href='../HTML/popup-link.html?linkId=${link.id}'><div class='one-link'>
         <img src=${link.imgUrl}></img>
         <span class='one-link-title'>${link.title}</span>
         </div></a></div>`
@@ -97,7 +97,8 @@ function createLink() {
 
 //get a link
 function getALink() {
-  $(document).on('click', '.go-to-link', function(){
+  $(document).on('click', '.go-to-link', function () {
+    console.log($(this))
     $.ajax({
       method: "GET",
       url: "/link",
@@ -135,13 +136,11 @@ function checkUser() {
 
 function checkIfLoggedIn() {
   $('.bb').on('click', function () {
-    console.log('bb clicked');
     $.ajax({
       method: "GET",
       url: "/check_user",
     }).done(function (data) {
       loggedIn = data.loggedOn;
-      console.log('dataaaa', loggedIn)
       if (!loggedIn) {
         replaceToLogin()
       }
