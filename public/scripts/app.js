@@ -93,8 +93,8 @@ function createLink() {
 
 //get a link
 function getALink() {
-  $(document).on('click', '.go-to-link', function(){
-    console.log('asdf')
+  $(document).on('click', '.go-to-link', function () {
+    console.log($(this))
     $.ajax({
       method: "GET",
       url: "/link",
@@ -132,13 +132,11 @@ function checkUser() {
 
 function checkIfLoggedIn() {
   $('.bb').on('click', function () {
-    console.log('bb clicked');
     $.ajax({
       method: "GET",
       url: "/check_user",
     }).done(function (data) {
       loggedIn = data.loggedOn;
-      console.log('dataaaa', loggedIn)
       if (!loggedIn) {
         replaceToLogin()
       }
