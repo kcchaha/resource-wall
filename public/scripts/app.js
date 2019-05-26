@@ -69,7 +69,7 @@ function addLinksToPage(links) {
   //create a category object to assign icons to the links
   links.forEach(link => {
     $(".link-display").prepend(
-      `<a href='/popup-link.html'><div class='one-link'>
+      `<a class="go-to-link" href='#'><div class='one-link'>
         <img src=${link.imgUrl}></img>
         <span class='one-link-title'>${link.title}</span>
         <span style='display:none' class='one-link-url'>${link.url}</span>
@@ -94,7 +94,7 @@ function createLink() {
 
 //get a link
 function getALink() {
-  $('.link-display a').on('click', function () {
+  $(document).on('click', '.go-to-link', function(){
     $.ajax({
       method: "GET",
       url: "/link",
@@ -137,6 +137,13 @@ function escape(str) {
   var div = document.createElement('div');
   div.appendChild(document.createTextNode(str));
   return div.innerHTML;
+}
+
+// Helper function: append each new composed comment into comment container
+function renderComments(tweets) {
+  for (tweet of tweets) {
+    $('#tweet-container').append(createTweetElement(tweet));
+  }
 }
 
 // ///////////////////
