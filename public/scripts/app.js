@@ -130,6 +130,17 @@ function checkUser() {
   });
 }
 
+// Comments ////////////////////////////
+
+// Helper function: Input safety
+function escape(str) {
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+// ///////////////////
+
 $(document).ready(function () {
   getALink();
   checkUser();
