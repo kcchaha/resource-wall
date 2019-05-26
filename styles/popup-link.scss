@@ -48,6 +48,7 @@
 
         .logo {
             @extend %a;
+            font-size: 3em;
         }
 
         .icon i {
@@ -138,7 +139,7 @@
                   width: 50%;
 
                   textarea {
-                      height: 12em;
+                      height: 15em;
                       border: 0;
                       border-radius: 8px;
                       padding: 1em 1em;
@@ -159,6 +160,7 @@
 
              .comment-display-area {
                  @extend %flex;
+                 justify-content: start;
                  @extend %column;
                  @extend %comment;
 
