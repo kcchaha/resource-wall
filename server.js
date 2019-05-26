@@ -7,18 +7,18 @@ const PORT = process.env.PORT || 8080;
 const ENV = process.env.ENV || "development";
 const express = require("express");
 const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const sass = require("node-sass-middleware");
-const cookieSession = require("cookie-session");
+const cookieSession = require('cookie-session');
 const app = express();
-const helperFunctions = require("./lib/util/helper_functions");
-const ogs = require("open-graph-scraper");
-const methodOverride = require("method-override");
+const helperFunctions = require('./lib/util/helper_functions');
+const ogs = require('open-graph-scraper');
+const methodOverride = require('method-override')
 const knexConfig = require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
-const morgan = require("morgan");
-const knexLogger = require("knex-logger");
+const morgan = require('morgan');
+const knexLogger = require('knex-logger');
 
 // Separated Routes for each Resource
 const usersRoutes = require("./routes/users");
@@ -95,7 +95,10 @@ app.post("/register", (req, res) => {
   if (helperFunctions.loggedOn(req)) {
     res.redirect("/");
   }
-  const { email, password } = req.body;
+  const {
+    email,
+    password
+  } = req.body;
 
   //check if email and password exists
   if (email.length === 0 || password.length === 0) {
@@ -122,7 +125,12 @@ app.post("/register", (req, res) => {
 //create a new link
 app.post("/links", (req, res) => {
   if (req.session.user_id) {
-    const { title, description, url, category } = req.body;
+    const {
+      title,
+      description,
+      url,
+      category
+    } = req.body;
     console.log("req!", req.body);
 
     knex("links")
@@ -167,6 +175,14 @@ app.put("/update-profile", (req, res) => {
     });
 });
 
+app.get("/update-profile", (req, res) => {
+  res.render("/update-profile")
+});
+
+app.get("/sign-in", (req, res) => {
+  res.render("/sign-in")
+});
+
 //////////////////// GET METHODS ////////////////////
 
 // Home page
@@ -202,10 +218,7 @@ app.get("/update-profile", (req, res) => {
 
 app.get("/container", (req, res) => {
   console.log("Hello!")
-  // if (!helperFunctions.loggedOn(req)) {
-  //   res.redirect("/sign-in.html");
-  // }
-  res.send("/container")
+  res.render("/container.html")
 });
 
 app.get("/user", (req, res) => {
@@ -226,7 +239,9 @@ app.get("/sign-in", (req, res) => {
 //get links
 app.get("/links", (req, res) => {
   //check if query string exists, search that query in the database and show the ones that have the key
-  const { key } = req.query;
+  const {
+    key
+  } = req.query;
   if (key) {
     knex
       .select("*")
@@ -271,14 +286,24 @@ app.get("/links", (req, res) => {
 });
 
 // //get a link
-// app.get("/links/:id", (req, res) => {
+// app.get("/links/:id/comment", (req, res) => {
+//   console.log(req.body)
+// });
+
+//like
+// app.get("/links/:id/like", (req, res) => {
 //   console.log(req.body)
 // });
 
 //create a new link
 app.post("/links", (req, res) => {
   if (req.session.user_id) {
-    const { title, description, url, category } = req.body;
+    const {
+      title,
+      description,
+      url,
+      category
+    } = req.body;
     console.log("req!", req.body);
 
     knex("links")
@@ -296,6 +321,13 @@ app.post("/links", (req, res) => {
       });
   }
 });
+
+app.get("/check_user", (req, res) => {
+  const value = helperFunctions.loggedOn(req)
+  res.json({
+    loggedOn: value
+  })
+})
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
