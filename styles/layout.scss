@@ -55,11 +55,14 @@ body {
         height: 1.8em;
         width: 1.8em;
         border: 0;
+        margin-right: 5em;
       }
     }
 
     .buttons-block {
       margin-left: auto;
+      @extend %flex;
+      flex-direction: row;
       #signin {
         margin-left: auto;
         @extend %sign;

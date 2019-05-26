@@ -94,7 +94,6 @@ function createLink() {
 //get a link
 function getALink() {
   $(document).on('click', '.go-to-link', function(){
-    console.log('asdf')
     $.ajax({
       method: "GET",
       url: "/link",
