@@ -23,11 +23,15 @@ function login() {
     event.preventDefault();
     $.ajax({
       method: "POST",
-      url: $(this).attr("action"),
+      url: "/sign-in",
       data: $(this).serialize()
-    }).done(function () {
+    })
+    .done(function () {
       window.location.replace("/");
       checkUser();
+    })
+    .fail(err => {
+      $(".not-member").text("This email already exists");
     });
   });
 }
@@ -69,7 +73,7 @@ function addLinksToPage(links) {
   //create a category object to assign icons to the links
   links.forEach(link => {
     $(".link-display").prepend(
-      `<a class="go-to-link" href='#'><div class='one-link'>
+      `<a class="go-to-link" href='/popup-link.html'><div class='one-link'>
         <img src=${link.imgUrl}></img>
         <span class='one-link-title'>${link.title}</span>
         </div></a></div>`
