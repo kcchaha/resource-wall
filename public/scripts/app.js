@@ -93,8 +93,12 @@ function createLink() {
 
 //get a link
 function getALink() {
+<<<<<<< HEAD
   $(document).on('click', '.go-to-link', function () {
     console.log($(this))
+=======
+  $(document).on('click', '.go-to-link', function(){
+>>>>>>> f3547ca91eb509c6ad51312df0a72e1ffdc2aac1
     $.ajax({
       method: "GET",
       url: "/link",
