@@ -69,7 +69,7 @@ function addLinksToPage(links) {
   //create a category object to assign icons to the links
   links.forEach(link => {
     $(".link-display").prepend(
-      `<a class="go-to-link" href='#'><div class='one-link'>
+      `<a class="go-to-link" href='../HTML/popup-link.html?linkId=${link.id}'><div class='one-link'>
         <img src=${link.imgUrl}></img>
         <span class='one-link-title'>${link.title}</span>
         </div></a></div>`
@@ -93,12 +93,8 @@ function createLink() {
 
 //get a link
 function getALink() {
-<<<<<<< HEAD
   $(document).on('click', '.go-to-link', function () {
     console.log($(this))
-=======
-  $(document).on('click', '.go-to-link', function(){
->>>>>>> f3547ca91eb509c6ad51312df0a72e1ffdc2aac1
     $.ajax({
       method: "GET",
       url: "/link",
