@@ -72,8 +72,7 @@ function addLinksToPage(links) {
       `<a class="go-to-link" href='#'><div class='one-link'>
         <img src=${link.imgUrl}></img>
         <span class='one-link-title'>${link.title}</span>
-        <span style='display:none' class='one-link-url'>${link.url}</span>
-        </div></a>`
+        </div></a></div>`
     );
   });
 }
@@ -95,10 +94,11 @@ function createLink() {
 //get a link
 function getALink() {
   $(document).on('click', '.go-to-link', function(){
+    console.log('asdf')
     $.ajax({
       method: "GET",
       url: "/link",
-      data: $(this).serialize()
+      data: $(this).attr('data-linkid')
     }).done(function () {
       console.log('here!')
     });
@@ -130,6 +130,26 @@ function checkUser() {
   });
 }
 
+function checkIfLoggedIn() {
+  $('.bb').on('click', function () {
+    console.log('bb clicked');
+    $.ajax({
+      method: "GET",
+      url: "/check_user",
+    }).done(function (data) {
+      loggedIn = data.loggedOn;
+      console.log('dataaaa', loggedIn)
+      if (!loggedIn) {
+        replaceToLogin()
+      }
+    });
+  })
+}
+
+function replaceToLogin() {
+  window.location.replace("/sign-in.html")
+}
+
 // Comments ////////////////////////////
 
 // Helper function: Input safety
@@ -149,11 +169,12 @@ function renderComments(tweets) {
 // ///////////////////
 
 $(document).ready(function () {
+  getALink();
   checkUser();
   loadLinks();
   getLinks();
   register();
   login();
   createLink();
-  getALink();
+  checkIfLoggedIn();
 });
