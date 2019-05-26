@@ -23,7 +23,9 @@ function getALinkRequest() {
 
 function linkDetails(link) {
   $(".info h3").text(link.title)
-  $(".info p").text(link.user_id)
+  $(".info p").text(link.email)
+  $(".description p").text(link.description)
+  $(".linka").attr("href", link.url)
 }
 
 function getUrlVars() {
@@ -38,6 +40,12 @@ function getUrlVars() {
   return vars;
 }
 
+////////POST COMMENTS/////////
+function postComments() {
+  console.log("val", $(".input-comment textarea").val())
+}
+
 $(document).ready(function () {
+  postComments()
   getALinkRequest()
 });
