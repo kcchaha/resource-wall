@@ -130,6 +130,26 @@ function checkUser() {
   });
 }
 
+function checkIfLoggedIn() {
+  $('.bb').on('click', function () {
+    console.log('bb clicked');
+    $.ajax({
+      method: "GET",
+      url: "/check_user",
+    }).done(function (data) {
+      loggedIn = data.loggedOn;
+      console.log('dataaaa', loggedIn)
+      if (!loggedIn) {
+        replaceToLogin()
+      }
+    });
+  })
+}
+
+function replaceToLogin() {
+  window.location.replace("/sign-in.html")
+}
+
 // Comments ////////////////////////////
 
 // Helper function: Input safety
@@ -149,4 +169,5 @@ $(document).ready(function () {
   register();
   login();
   createLink();
+  checkIfLoggedIn();
 });

@@ -315,6 +315,10 @@ app.get("/check_user", (req, res) => {
   })
 })
 
+app.get('/:link', (req, res) => {
+  console.log(req.params.link);
+})
+
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
