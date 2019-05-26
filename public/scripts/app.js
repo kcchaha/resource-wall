@@ -69,11 +69,10 @@ function addLinksToPage(links) {
   //create a category object to assign icons to the links
   links.forEach(link => {
     $(".link-display").prepend(
-      `<a href='/popup-link.html'><div class='one-link'>
+      `<div id='single-link'><a data-linkid=${link.id} href='/popup-link.html'><div class='one-link'>
         <img src=${link.imgUrl}></img>
         <span class='one-link-title'>${link.title}</span>
-        <span style='display:none' class='one-link-url'>${link.url}</span>
-        </div></a>`
+        </div></a></div>`
     );
   });
 }
@@ -94,11 +93,12 @@ function createLink() {
 
 //get a link
 function getALink() {
-  $('.link-display a').on('click', function () {
+  $('a').on('click', function () {
+    console.log('atttr')
     $.ajax({
       method: "GET",
       url: "/link",
-      data: $(this).serialize()
+      data: $(this).attr('data-linkid')
     }).done(function () {
       console.log('here!')
     });
@@ -131,11 +131,11 @@ function checkUser() {
 }
 
 $(document).ready(function () {
+  getALink();
   checkUser();
   loadLinks();
   getLinks();
   register();
   login();
   createLink();
-  getALink();
 });
