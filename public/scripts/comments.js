@@ -39,6 +39,8 @@ function createCommentElement(comment) {
     <p class="single-comment">${escape(comment.comment)}</p>
     <div class="comment-icon">
       <p class="heart"><i class="fas fa-heart"></i></p>
+      <p><i class="fas fa-retweet"></i></p>
+      <p><i class="fas fa-flag"></i></p>
     </div>
   </section>`;
 

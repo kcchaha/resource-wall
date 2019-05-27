@@ -175,8 +175,14 @@
                     }
     
                     .comment-icon {
-                        margin-left: auto;
+                        display: flex;
+                        flex-direction: row;
+                        float: right;
                         color: white;
+
+                        p {
+                            margin-left: .5em;
+                        }
 
                        .heart:hover {
                            color: red;
