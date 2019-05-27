@@ -78,7 +78,11 @@ $(document).ready(() => {
 
   // Helper function: Displaying all the tweets in real time and sort from newest to oldest by using AJAX
   function loadComments() {
-    $.ajax('/comments', {
+    const {
+      linkId
+    } = getUrlVars()
+
+    $.ajax(`/comments/${linkId}`, {
       method: 'GET',
       dataType: 'json',
       error: function (req, status, error) {

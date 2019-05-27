@@ -161,6 +161,8 @@ app.post("/links", (req, res) => {
 
 // Make a new comment
 app.post("/comments", (req, res) => {
+
+  const { link_id } = req.body;
   if (req.session.user_id) {
     console.log('idid:', req.session.user_id)
     // const {comment} = req.body;
@@ -169,7 +171,7 @@ app.post("/comments", (req, res) => {
     knex("comments")
       .insert({
         comment: req.body.text,
-        //link_id??
+        link_id,
         user_id: req.session.user_id
       })
       .then(comments => {
@@ -179,6 +181,7 @@ app.post("/comments", (req, res) => {
         })
       });
   }
+
 });
 
 
@@ -202,9 +205,10 @@ app.put("/update-profile", (req, res) => {
     .updatePassword(knex, inputEmail, oldPassword, newPassword)
     .then(result => {
       if (result) {
-        res.send("Password successfully changed.");
+        res.redirect("/");
+        return;
       }
-      res.send("Wrong password. Please try again.");
+      res.redirect("/");
     });
 });
 
@@ -306,10 +310,14 @@ app.get("/links", (req, res) => {
 });
 
 // Get comments
-app.get("/comments", (req, res) => {
+app.get("/comments/:link_id", (req, res) => {
+
+  const link_id = req.params.link_id;
+
   knex
     .select("comment")
     .from("comments")
+    .where({ link_id })
     .then(comments => {
       console.log('waht are you?: ', comments);
       res.send(comments);
