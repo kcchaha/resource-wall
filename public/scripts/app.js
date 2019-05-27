@@ -39,7 +39,7 @@ function login() {
         console.log(data.success);
 
         if (!data.success) {
-          $(".not-member").text("This email already exists");
+          $(".not-member").text("Wrong password, please try again");
 
         } else {
 

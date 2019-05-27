@@ -175,7 +175,7 @@ app.post("/comments", (req, res) => {
       .then(comments => {
         console.log("table", comments);
         res.send(comments)
-        // res.status(200).send("Ok");
+        res.status(200).send("Ok");
       });
   }
 });
