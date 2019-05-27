@@ -1,7 +1,7 @@
 var loggedIn;
 
 // get user id from server when the user is logged in
-function checkId () {
+function checkId() {
   $.get('/person', (data) => {
     console.log(data);
   })
@@ -11,10 +11,10 @@ function register() {
   $("#sign-up-form").on("submit", function (event) {
     event.preventDefault();
     $.ajax({
-      url: "/register",
-      type: "POST",
-      data: $(this).serialize()
-    })
+        url: "/register",
+        type: "POST",
+        data: $(this).serialize()
+      })
       .done(function () {
         window.location.replace("/");
         checkUser();
@@ -29,10 +29,10 @@ function login() {
   $("#sign-in-form").on("submit", function (event) {
     event.preventDefault();
     $.ajax({
-      method: "POST",
-      url: "/sign-in",
-      data: $(this).serialize()
-    })
+        method: "POST",
+        url: "/sign-in",
+        data: $(this).serialize()
+      })
       .done(function (data) {
         console.log('here', data);
 
@@ -169,6 +169,9 @@ function replaceToLogin() {
   window.location.replace("/sign-in.html")
 }
 
+
+
+
 // Comments ////////////////////////////
 
 // Helper function: Input safety
@@ -185,7 +188,7 @@ function renderComments(tweets) {
   }
 }
 
-// ///////////////////
+// get user id from server when the user is logged in
 
 $(document).ready(function () {
   getALink();

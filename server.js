@@ -67,7 +67,7 @@ app.use("/api/users", usersRoutes(knex));
 
 // sign-in form
 app.post("/sign-in", (req, res) => {
-  
+
   if (helperFunctions.loggedOn(req)) {
     res.redirect("/");
     return;
@@ -162,9 +162,9 @@ app.post("/links", (req, res) => {
 // Make a new comment
 app.post("/comments", (req, res) => {
   if (req.session.user_id) {
-    console.log('idid:',req.session.user_id)
+    console.log('idid:', req.session.user_id)
     // const {comment} = req.body;
-    console.log("req!", req.body.text);
+    console.log("body text", req.body.text);
 
     knex("comments")
       .insert({
@@ -174,8 +174,9 @@ app.post("/comments", (req, res) => {
       })
       .then(comments => {
         console.log("table", comments);
-        res.send(comments)
-        res.status(200).send("Ok");
+        res.json({
+          comment: req.body.text
+        })
       });
   }
 });
@@ -307,12 +308,12 @@ app.get("/links", (req, res) => {
 // Get comments
 app.get("/comments", (req, res) => {
   knex
-      .select("comment")
-      .from("comments")
-      .then(comments => {
-        console.log('waht are you?: ', comments);
-        res.send(comments);
-      });
+    .select("comment")
+    .from("comments")
+    .then(comments => {
+      console.log('waht are you?: ', comments);
+      res.send(comments);
+    });
 })
 
 
@@ -356,7 +357,7 @@ app.post("/links", (req, res) => {
       url,
       category
     } = req.body;
-    console.log("req!", req.body);
+    console.log("links body", req.body);
 
     knex("links")
       .insert({
@@ -381,15 +382,51 @@ app.get("/check_user", (req, res) => {
   })
 })
 
-// get user id from server when the user is logged in
-app.get('/person', (req, res) => {
-  res.json({ id: req.session.user_id })
-})
-
-
 // app.get('/:link', (req, res) => {
 //   console.log(req.params.link);
 // })
+
+//like links
+app.post("/like", (req, res) => {
+  console.log("reqq", req.body)
+
+  knex
+    .select("*")
+    .from("likes")
+    .where("link_id", "=", req.body.link_id)
+    .then(like => {
+      console.log("likes", like);
+
+      if (like.length > 0) {
+        knex('likes')
+          .where('link_id', req.body.link_id)
+          .del().then(rows => {
+            res.status(200).send({
+              liked: false
+            })
+          })
+
+      } else {
+        knex("likes")
+          .insert({
+            link_id: req.body.link_id,
+            user_id: req.session.user_id,
+          }).then(like => {
+            console.log("like", like);
+            res.status(200).send({
+              liked: true
+            })
+          })
+      }
+    });
+})
+
+app.get('/person', (req, res) => {
+  res.json({
+    id: req.session.user_id
+  })
+})
+
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);

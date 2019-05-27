@@ -23,7 +23,10 @@ function getALinkRequest() {
 
 function linkDetails(link) {
   $(".info h3").text(link.title)
-  $(".info p").text(link.user_id)
+  $(".info p").text(link.email)
+  $(".description p").text(link.description)
+  $(".linka").attr("href", link.url)
+  // $(".butt").append(`<button type="submit"><i data-link=${link.id} class="fas fa-heart"></i>Like</button>`)
 }
 
 function getUrlVars() {
@@ -38,6 +41,30 @@ function getUrlVars() {
   return vars;
 }
 
+////////LIKE LINKS/////////
+function likeLinks() {
+  const {
+    linkId
+  } = getUrlVars()
+
+  $(".butt button").on("click", function () {
+    $.ajax({
+      method: "POST",
+      url: "/like",
+      data: `link_id=${linkId}`
+    }).done(function (res) {
+      if (res.liked) {
+        $(".butt button i").css("color", "#c0392b")
+        $(".butt button").css("color", "black")
+      } else {
+        $(".butt button i").css("color", "#757575")
+        $(".butt button").css("color", "#757575")
+      }
+    });
+  })
+}
+
 $(document).ready(function () {
   getALinkRequest()
+  likeLinks()
 });
