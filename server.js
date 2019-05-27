@@ -325,8 +325,22 @@ app.get("/check_user", (req, res) => {
   })
 })
 
-// app.get('/:link', (req, res) => {
-//   console.log(req.params.link);
+app.get('/:link', (req, res) => {
+  console.log(req.params.link);
+})
+
+// //like links
+// app.post("/like", (req, res) => {
+//   console.log("reqq", req.body)
+//   knex("likes")
+//     .insert({
+//       id: ,
+//       link_id: ,
+//       user_id: req.session.user_id,
+//     }).then(like => {
+//       console.log("like", like);
+//       res.status(200).send("Ok");
+//     })
 // })
 
 app.listen(PORT, () => {

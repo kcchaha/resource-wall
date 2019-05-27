@@ -164,7 +164,7 @@ function renderComments(tweets) {
   }
 }
 
-// ///////////////////
+// get user id from server when the user is logged in
 
 $(document).ready(function () {
   getALink();

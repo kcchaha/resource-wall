@@ -26,6 +26,7 @@ function linkDetails(link) {
   $(".info p").text(link.email)
   $(".description p").text(link.description)
   $(".linka").attr("href", link.url)
+  // $(".butt").append(`<button type="submit"><i data-link=${link.id} class="fas fa-heart"></i>Like</button>`)
 }
 
 function getUrlVars() {
@@ -40,12 +41,20 @@ function getUrlVars() {
   return vars;
 }
 
-////////POST COMMENTS/////////
-function postComments() {
-  console.log("val", $(".input-comment textarea").val())
-}
+// ////////LIKE LINKS/////////
+// function likeLinks(){
+//   $(".butt button").on("click", function(){
+//     $.ajax({
+//       method: "POST",
+//       url: "/like",
+//       data: data.serialize()
+//     }).done(function () {
+//       console.log('liked')
+//     });
+//   })
+// }
 
 $(document).ready(function () {
-  postComments()
   getALinkRequest()
+  likeLinks()
 });
