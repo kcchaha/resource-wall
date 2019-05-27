@@ -41,18 +41,28 @@ function getUrlVars() {
   return vars;
 }
 
-// ////////LIKE LINKS/////////
-// function likeLinks(){
-//   $(".butt button").on("click", function(){
-//     $.ajax({
-//       method: "POST",
-//       url: "/like",
-//       data: data.serialize()
-//     }).done(function () {
-//       console.log('liked')
-//     });
-//   })
-// }
+////////LIKE LINKS/////////
+function likeLinks() {
+  const {
+    linkId
+  } = getUrlVars()
+
+  $(".butt button").on("click", function () {
+    $.ajax({
+      method: "POST",
+      url: "/like",
+      data: `link_id=${linkId}`
+    }).done(function (res) {
+      if (res.liked) {
+        $(".butt button i").css("color", "#c0392b")
+        $(".butt button").css("color", "black")
+      } else {
+        $(".butt button i").css("color", "#757575")
+        $(".butt button").css("color", "#757575")
+      }
+    });
+  })
+}
 
 $(document).ready(function () {
   getALinkRequest()

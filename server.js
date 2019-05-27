@@ -62,18 +62,23 @@ app.use(express.static("public"));
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
 
+
 //////////////////// POST METHODS ////////////////////
 
 // sign-in form
 app.post("/sign-in", (req, res) => {
+
   if (helperFunctions.loggedOn(req)) {
     res.redirect("/");
+    return;
   }
   if (!req.body.email) {
     res.send("Empty email field. Please try again.");
+    return;
   }
   if (req.body.password.length === 0) {
     res.send("Empty password field. Please try again.");
+    return;
   }
   helperFunctions
     .authenticate(knex, req.body.email, req.body.password)
@@ -81,10 +86,16 @@ app.post("/sign-in", (req, res) => {
       if (result) {
         helperFunctions.findId(knex, req.body.email).then(user => {
           req.session.user_id = user;
-          res.redirect("/");
+          // res.redirect("/");
+          res.json({
+            success: true,
+          })
         });
       } else {
-        res.send("Wrong password or email. Please try again.");
+        // res.send("Wrong password or email. Please try again.");
+        res.json({
+          success: false,
+        })
       }
     });
 });
@@ -147,6 +158,29 @@ app.post("/links", (req, res) => {
       });
   }
 });
+
+// Make a new comment
+app.post("/comments", (req, res) => {
+  if (req.session.user_id) {
+    console.log('idid:', req.session.user_id)
+    // const {comment} = req.body;
+    console.log("body text", req.body.text);
+
+    knex("comments")
+      .insert({
+        comment: req.body.text,
+        //link_id??
+        user_id: req.session.user_id
+      })
+      .then(comments => {
+        console.log("table", comments);
+        res.json({
+          comment: req.body.text
+        })
+      });
+  }
+});
+
 
 // logout
 app.post("/logout", (req, res) => {
@@ -271,6 +305,19 @@ app.get("/links", (req, res) => {
   }
 });
 
+// Get comments
+app.get("/comments", (req, res) => {
+  knex
+    .select("comment")
+    .from("comments")
+    .then(comments => {
+      console.log('waht are you?: ', comments);
+      res.send(comments);
+    });
+})
+
+
+// Popup-link show creator, title and description of the link
 app.get("/links/:link_id", (req, res) => {
   knex("links").leftOuterJoin("user_credentials", "links.user_id", "=", "user_credentials.id")
     .select("*")
@@ -281,6 +328,16 @@ app.get("/links/:link_id", (req, res) => {
     });
 })
 
+// container page shows the collection of links created or liked by the user
+app.get("/container/:user_id", (req, res) => {
+  knex("links").leftOuterJoin("user_credentials", "links.user_id", "=", "user_credentials.id")
+    .select("*")
+    .where("links.id", "=", `${req.params.user_id}`)
+    .then(user => {
+      console.log(user)
+      res.send(user)
+    });
+})
 // //get a link
 // app.get("/link", (req, res) => {
 //   console.log('bip;', req.body)
@@ -300,7 +357,7 @@ app.post("/links", (req, res) => {
       url,
       category
     } = req.body;
-    console.log("req!", req.body);
+    console.log("links body", req.body);
 
     knex("links")
       .insert({
@@ -325,23 +382,51 @@ app.get("/check_user", (req, res) => {
   })
 })
 
-app.get('/:link', (req, res) => {
-  console.log(req.params.link);
+// app.get('/:link', (req, res) => {
+//   console.log(req.params.link);
+// })
+
+//like links
+app.post("/like", (req, res) => {
+  console.log("reqq", req.body)
+
+  knex
+    .select("*")
+    .from("likes")
+    .where("link_id", "=", req.body.link_id)
+    .then(like => {
+      console.log("likes", like);
+
+      if (like.length > 0) {
+        knex('likes')
+          .where('link_id', req.body.link_id)
+          .del().then(rows => {
+            res.status(200).send({
+              liked: false
+            })
+          })
+
+      } else {
+        knex("likes")
+          .insert({
+            link_id: req.body.link_id,
+            user_id: req.session.user_id,
+          }).then(like => {
+            console.log("like", like);
+            res.status(200).send({
+              liked: true
+            })
+          })
+      }
+    });
 })
 
-// //like links
-// app.post("/like", (req, res) => {
-//   console.log("reqq", req.body)
-//   knex("likes")
-//     .insert({
-//       id: ,
-//       link_id: ,
-//       user_id: req.session.user_id,
-//     }).then(like => {
-//       console.log("like", like);
-//       res.status(200).send("Ok");
-//     })
-// })
+app.get('/person', (req, res) => {
+  res.json({
+    id: req.session.user_id
+  })
+})
+
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
