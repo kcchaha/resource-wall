@@ -1,13 +1,20 @@
 var loggedIn;
 
+// get user id from server when the user is logged in
+function checkId () {
+  $.get('/person', (data) => {
+    console.log(data);
+  })
+}
+
 function register() {
   $("#sign-up-form").on("submit", function (event) {
     event.preventDefault();
     $.ajax({
-        url: "/register",
-        type: "POST",
-        data: $(this).serialize()
-      })
+      url: "/register",
+      type: "POST",
+      data: $(this).serialize()
+    })
       .done(function () {
         window.location.replace("/");
         checkUser();
@@ -26,13 +33,23 @@ function login() {
       url: "/sign-in",
       data: $(this).serialize()
     })
-    .done(function () {
-      window.location.replace("/");
-      checkUser();
-    })
-    .fail(err => {
-      $(".not-member").text("This email already exists");
-    });
+      .done(function (data) {
+        console.log('here', data);
+
+        console.log(data.success);
+
+        if (!data.success) {
+          $(".not-member").text("This email already exists");
+
+        } else {
+
+          window.location.replace("/");
+        }
+        checkUser();
+      })
+      .fail(err => {
+        console.log(err);
+      });
   });
 }
 
