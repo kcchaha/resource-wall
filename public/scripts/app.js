@@ -91,7 +91,7 @@ function addLinksToPage(links) {
   links.forEach(link => {
     $(".link-display").prepend(
       `<a class="go-to-link" href='../HTML/popup-link.html?linkId=${link.id}'><div class='one-link'>
-        <img src=${link.imgUrl}></img>
+        <img src=${link.imgUrl} onerror="this.src='../Docs/other.png'"></img>
         <span class='one-link-title'>${link.title}</span>
         </div></a></div>`
     );

@@ -329,13 +329,27 @@ app.get("/links/:link_id", (req, res) => {
 })
 
 // container page shows the collection of links created or liked by the user
-app.get("/container/:user_id", (req, res) => {
-  knex("links").leftOuterJoin("user_credentials", "links.user_id", "=", "user_credentials.id")
+app.get("/container", (req, res) => {
+  knex("links")
     .select("*")
-    .where("links.id", "=", `${req.params.user_id}`)
-    .then(user => {
-      console.log(user)
-      res.send(user)
+    .where("links.user_id", "=", req.session.user_id)
+    .then(userLinks => {
+      knex("links").innerJoin("likes", "links.id", "=", "likes.link_id")
+        .select("*")
+        .where("likes.user_id", "=", req.session.user_id)
+        .then(userLikes => {
+          knex("user_credentials")
+            .select("email")
+            .where("id", req.session.user_id)
+            .then(email => {
+              const linksByUser = {
+                email: email[0].email,
+                ownLinks: userLinks,
+                likedLinks: userLikes
+              }
+              res.json(linksByUser)
+            })
+        });
     });
 })
 // //get a link
