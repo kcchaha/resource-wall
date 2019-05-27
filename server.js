@@ -169,7 +169,7 @@ app.post("/comments", (req, res) => {
     knex("comments")
       .insert({
         comment: req.body.text,
-        //link_id??
+        link_id: req.body.link_id,
         user_id: req.session.user_id
       })
       .then(comments => {
@@ -334,20 +334,23 @@ app.get("/container", (req, res) => {
     .select("*")
     .where("links.user_id", "=", req.session.user_id)
     .then(userLinks => {
-      console.log("userLinks:", userLinks)
       knex("links").innerJoin("likes", "links.id", "=", "likes.link_id")
         .select("links.title")
         .where("likes.user_id", "=", req.session.user_id)
         .then(userLikes => {
-          console.log("userLikes,", userLikes)
-          console.log(req.session)
-          const linksByUser = {
-            ownLinks: userLinks,
-            likedLinks: userLikes
-          }
-          res.json(linksByUser)
+          knex("user_credentials")
+            .select("email")
+            .where("id", req.session.user_id)
+            .then(email => {
+              console.log("emai77hhuhuhhuhhuhhl", email)
+              const linksByUser = {
+                email: email[0].email,
+                ownLinks: userLinks,
+                likedLinks: userLikes
+              }
+              res.json(linksByUser)
+            })
         });
-      // res.send(user)
     });
 })
 

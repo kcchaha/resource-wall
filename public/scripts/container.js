@@ -15,9 +15,9 @@ function getUserContainer() {
   $.ajax({
     method: "GET",
     url: `/container`,
-  }).done(function (user) {
-    console.log('user: ', user)
-    //containerDetails(link[0])
+  }).done(function (userData) {
+    console.log('user: ', userData)
+    $(".userEmail").text(userData.email);
   });
 }
 
