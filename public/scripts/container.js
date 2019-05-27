@@ -18,7 +18,21 @@ function getUserContainer() {
   }).done(function (userData) {
     console.log('user: ', userData)
     $(".userEmail").text(userData.email);
+    ownLinks(userData.ownLinks)
+    likedLinks(userData.likedLinks)
   });
+}
+
+function ownLinks(links) {
+  links.forEach(link => {
+    $(".my-links").append(`<p><a class="show-links" href="${link.url}" target="blank">${link.title}</a></p>`)
+  })
+}
+
+function likedLinks(links) {
+  links.forEach(link => {
+    $(".liked-links").append(`<p><a class="show-links" href="${link.url}" target="blank">${link.title}</a></p>`)
+  })
 }
 
 function containerDetails(link) {

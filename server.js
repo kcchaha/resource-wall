@@ -335,14 +335,13 @@ app.get("/container", (req, res) => {
     .where("links.user_id", "=", req.session.user_id)
     .then(userLinks => {
       knex("links").innerJoin("likes", "links.id", "=", "likes.link_id")
-        .select("links.title")
+        .select("*")
         .where("likes.user_id", "=", req.session.user_id)
         .then(userLikes => {
           knex("user_credentials")
             .select("email")
             .where("id", req.session.user_id)
             .then(email => {
-              console.log("emai77hhuhuhhuhhuhhl", email)
               const linksByUser = {
                 email: email[0].email,
                 ownLinks: userLinks,
